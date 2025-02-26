@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <form method="POST" action="{{ url_for('signup') }}">
+            <input type="text" name="name" placeholder="Name" required style="left: 92px; top: 369px; position: absolute;">
+            <input type="text" name="email" placeholder="Email" required style="left: 92px; top: 430px; position: absolute;">
+            <input type="password" name="password" placeholder="Password" required style="left: 92px; top: 490px; position: absolute;">
+            <button type="submit" style="left: 92px; top: 571px; position: absolute;">Sign Up</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div style="left: 92px; top: 535px; position: absolute; color: red; font-size: 14px;">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div style="left: 130px; top: 236px; position: absolute; text-align: center; color: black; font-size: 36px; font-family: Inter; font-weight: 400; word-wrap: break-word">Sign Up</div>
+    </div>
+</body>
+</html>
