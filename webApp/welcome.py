@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = "mySecretKey"
 
 # MongoDP Atlas Connection
-app.config["MONGO_URI"] = "mongodb+srv://sg7510:Sdecode112358s!@swemangopi.pybjr.mongodb.net/?retryWrites=true&w=majority&appName=sweMangoPI"
+app.config["MONGO_URI"] = "mongodb+srv://sg7510:Sdecode112358s!@cluster0.dwknr.mongodb.net/zifan_test"
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
 
