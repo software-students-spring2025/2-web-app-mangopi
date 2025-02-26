@@ -158,11 +158,6 @@ def create_app():
     @app.route("/add_log", methods=["GET", "POST"])
     @login_required
     def add_log():
-        """
-        Handles log addition:
-        - GET request: Shows the Add Log form
-        - POST request: Saves form data to MongoDB and redirects to measurements
-        """
         if request.method == "POST":
             body_weight = request.form.get("body_weight")
             body_fat = request.form.get("body_fat")
