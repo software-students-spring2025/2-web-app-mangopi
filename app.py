@@ -43,7 +43,7 @@ def create_app():
 
     cxn = pymongo.MongoClient(MONGO_URI)
     db = cxn[MONGO_DBNAME]
-    logs_collection = db["test_logs"]
+    logs_collection = db["test_logs"] # TODO: Configure correct db for add_log
     users_collection = db["users"]  # Collection for user data
 
     try:
