@@ -4,8 +4,7 @@ A little exercise to build a web application following an agile development proc
 
 ## Product vision statement
 
-See instructions. Delete this line and place the Product Vision Statement here.
-
+Our Weight Tracker & Body Dimension App helps fitness people track their journey to healthier body shapes by recording and analyzing body measurements over time with seamless logging, data visualization, and personalized insights, ensuring an intuitive and effective experience with database-driven tracking and management.
 ## User stories
 
 See instructions. Delete this line and place a link to the user stories here.
