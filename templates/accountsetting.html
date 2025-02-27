@@ -4,25 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Setting</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='loginstyles.css') }}">
 </head>
 <body>
     <div class="container">
-      <div style="width: 209px; height: 35px; left: 92px; top: 698px; position: absolute; background: white; border: 1px black solid"></div>
-      <div style="width: 25px; height: 25px; left: 83px; top: 465px; position: absolute; background: white; border: 1px black solid"></div>
-      <div style="width: 25px; height: 25px; left: 83px; top: 508px; position: absolute; background: white; border: 1px black solid"></div>
-      <div style="left: 179px; top: 706px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word"><a href="{{ url_for('login') }}" style="text-decoration: none">Save</a></div>
-      <div style="left: 80px; top: 432px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Goal</div>
-      <div style="left: 138px; top: 468px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Lose Weight</div>
-      <div style="left: 138px; top: 511px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Get In Better Body Shape</div>
-      <div style="width: 25px; height: 25px; left: 83px; top: 580px; position: absolute; background: white; border: 1px black solid"></div>
-      <div style="left: 80px; top: 547px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Preference</div>
-      <div style="left: 138px; top: 583px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Log Body Measurement ?</div>
-      <div style="width: 209px; height: 29px; left: 80px; top: 389px; position: absolute; background: white; border-bottom: 1px black solid"></div>
-      <div style="left: 80px; top: 370px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Date of Birth</div>
-      <div style="width: 209px; height: 29px; left: 79px; top: 327px; position: absolute; background: white; border-bottom: 1px black solid"></div>
-      <div style="left: 80px; top: 308px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Gender</div>
-      <div style="left: 60px; top: 204px; position: absolute; text-align: center; color: black; font-size: 36px; font-family: Inter; font-weight: 400; word-wrap: break-word">Account Setting</div>
+        <h1 class="title">Account Setting</h1>
+        
+        <form>
+            <div class="form-group gender-group">
+                <label for="gender">Gender</label>
+                <select id="gender" class="form-control">
+                    <option value="" selected disabled>Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+            </div>
+
+            <div class="form-group dob-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <h3 class="section-title">Goal</h3>
+                
+                <div class="radio-group">
+                    <input class="form-control-inline" type="radio" id="lose-weight" name="goal" onclick="showPreference()">
+                    <label for="lose-weight">Lose Weight</label>
+                </div>
+                
+                <div class="radio-group">
+                    <input class="form-control-inline" type="radio" id="better-shape" name="goal" onclick="hidePreference()">
+                    <label for="better-shape">Get In Better Body Shape</label>
+                </div>
+            </div>
+            
+            <div id="preference-section" class="form-group">
+                <h3 id="preference-title" class="section-title">Preference</h3>
+                
+                <div id="preference-option" class="checkbox-group">
+                    <input class="form-control-inline" type="checkbox" id="log-measurement">
+                    <label id="preference-label" for="log-measurement">Log Body Measurement?</label>
+                </div>
+            </div>
+
+            <a href="{{ url_for('login') }}" class="save-button">Save</a>
+        </form>
     </div>
+
+    <script>
+        // Hide preference section by default
+        document.getElementById('preference-section').style.display = 'none';
+        
+        function showPreference() {
+            document.getElementById('preference-section').style.display = 'block';
+        }
+        
+        function hidePreference() {
+            document.getElementById('preference-section').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

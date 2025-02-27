@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import pymongo
 from bson.objectid import ObjectId
 
-load_dotenv()
+load_dotenv(override=True)
 
 # User class for Flask-Login
 class User(UserMixin):
