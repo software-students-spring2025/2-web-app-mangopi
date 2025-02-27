@@ -161,12 +161,26 @@ def create_app():
         if request.method == "POST":
             body_weight = request.form.get("body_weight")
             body_fat = request.form.get("body_fat")
+            waist  = request.form.get("waist")
+            shoulder = request.form.get("shoulder")
+            chest = request.form.get("chest")
+            abdomen = request.form.get("abdomen")
+            hip = request.form.get("hip")
+            left_thigh = request.form.get("left_thigh")
+            right_thigh = request.form.get("right_thigh")
             
             # Create a new log with user ID
             doc = {
                 "user_id": current_user.id,
                 "body_weight": body_weight,
                 "body_fat": body_fat,
+                "waist": waist,
+                "shoulder": shoulder,
+                "chest": chest,
+                "abdomen": abdomen,
+                "hip": hip,
+                "left_thigh": left_thigh,
+                "right_thigh": right_thigh,
                 "created_at": datetime.datetime.utcnow()
             }
             logs_collection.insert_one(doc)
@@ -175,6 +189,51 @@ def create_app():
             return redirect(url_for("measurements"))
         
         return render_template("add_log.html")
+    
+    @app.route("/edit_log/<log_id>", methods=["GET", "POST"])
+    @login_required
+    def edit_log(log_id):
+        log = logs_collection.find_one({"_id": ObjectId(log_id), "user_id": current_user.id})
+
+        if not log:
+            flash("Log not found")
+            return redirect(url_for("measurements"))
+        
+        if request.method == "POST":
+            body_weight = request.form.get("body_weight")
+            body_fat = request.form.get("body_fat")
+            waist  = request.form.get("waist")
+            shoulder = request.form.get("shoulder")
+            chest = request.form.get("chest")
+            abdomen = request.form.get("abdomen")
+            hip = request.form.get("hip")
+            left_thigh = request.form.get("left_thigh")
+            right_thigh = request.form.get("right_thigh")
+
+            update_fields = {
+                "body_weight": body_weight,
+                "body_fat": body_fat,
+                "waist": waist,
+                "shoulder": shoulder,
+                "chest": chest,
+                "abdomen": abdomen,
+                "hip": hip,
+                "left_thigh": left_thigh,
+                "right_thigh": right_thigh,
+                "updated_at": datetime.datetime.utcnow()
+            }
+
+            logs_collection.update_one({"_id": ObjectId(log_id)}, {"$set": update_fields})
+
+            return redirect(url_for("measurements"))
+        
+        return render_template("edit_log.html", log=log)
+
+    @app.route("/delete_log/<log_id>", methods=["GET", "POST"])
+    @login_required
+    def delete_log(log_id):
+        logs_collection.delete_one({"_id": ObjectId(log_id), "user_id": current_user.id})
+        return redirect(url_for("measurements"))
 
     @app.route("/")
     def index():

@@ -27,6 +27,23 @@
             <div style="width: 100%; height: 100%; background: white; border: 1px black solid"></div>
             <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 10px; font-weight: 400;">Profile</div>
         </a>
+
+        <h2>Add Log</h2>
+        
+        <form method="POST" action="/add_log">
+            <label>Body Weight (kg): <input type="text" name="body_weight"></label>
+            <label>Body Fat (%): <input type="text" name="body_fat"></label>
+            <label>Waist (cm): <input type="text" name="waist"></label>
+            <label>Shoulder (cm): <input type="text" name="shoulder"></label>
+            <label>Chest (cm): <input type="text" name="chest"></label>
+            <label>Abdomen (cm): <input type="text" name="abdomen"></label>
+            <label>Hip (cm): <input type="text" name="hip"></label>
+            <label>Left Thigh (cm): <input type="text" name="left_thigh"></label>
+            <label>Right Thigh (cm): <input type="text" name="right_thigh"></label>
+
+            <button type="submit">Save</button>
+        </form>
+        
         <div style="left: 126px; top: 193px; position: absolute; text-align: center; color: black; font-size: 36px; font-family: Inter; font-weight: 400; word-wrap: break-word">Add Log</div>
     </div>
 </body>
