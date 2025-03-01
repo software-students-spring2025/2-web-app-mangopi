@@ -221,3 +221,88 @@ a:hover {
     margin-right: 1%;
     margin-left: 1%;
 }
+
+/* Add Log Page Styles */
+.measurements-section {
+    margin-top: 20px;
+}
+
+.measurements-header {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.measurement-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.measurement-label {
+    font-size: 16px;
+    color: #333;
+}
+
+.date-display {
+    font-size: 16px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-label {
+    font-weight: 700;
+}
+
+.measurement-input {
+    width: 60px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    padding: 5px 0;
+    text-align: right;
+}
+
+.input-container {
+    min-width: 120px;
+    text-align: right;
+}
+
+.measurement-input:focus {
+    outline: none;
+    border-bottom: 2px solid #333;
+}
+
+.save-button {
+    width: 100%;
+    height: 44px;
+    margin-top: 30px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.save-button:hover {
+    background: #555;
+}
+
+.save-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 5px;
+    text-align: right;
+}

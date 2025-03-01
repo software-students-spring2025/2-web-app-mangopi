@@ -4,212 +4,180 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Add Log</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
 </head>
 <body>
   <div class="container">
-    <a href="{{ url_for('home') }}" style="position: absolute; left: 17px; top: 82px; width: 72px; height: 36px; display: block;">
-      <div style="width: 100%; height: 100%; background: white; border: 1px black solid"></div>
-      <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); 
-                  text-align: center; font-size: 10px; font-weight: 700;">
-        Home
-      </div>
-    </a>
-
-    <a href="{{ url_for('measurements') }}" style="position: absolute; left: 113px; top: 82px; width: 72px; height: 36px; display: block;">
-      <div style="width: 100%; height: 100%; background: #D9D9D9; border: 1px black solid"></div>
-      <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-                  text-align: center; font-size: 10px; font-weight: 400;">
-        Measurements
-      </div>
-    </a>
-
-    <a href="{{ url_for('community') }}" style="position: absolute; left: 209px; top: 82px; width: 72px; height: 36px; display: block;">
-      <div style="width: 100%; height: 100%; background: white; border: 1px black solid"></div>
-      <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-                  text-align: center; font-size: 10px; font-weight: 400;">
-        Community
-      </div>
-    </a>
-
-    <a href="{{ url_for('profile') }}" style="position: absolute; left: 305px; top: 82px; width: 72px; height: 36px; display: block;">
-      <div style="width: 100%; height: 100%; background: white; border: 1px black solid"></div>
-      <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-                  text-align: center; font-size: 10px; font-weight: 400;">
-        Profile
-      </div>
-    </a>
-
-    <!-- Page Title -->
-    <div style="left: 71px; top: 193px; position: absolute; text-align: center;
-                color: black; font-size: 36px; font-family: Inter; font-weight: 400;
-                word-wrap: break-word;">
-      Add Log
+    <div class="header">
+      <button class="goback-button"><a href="{{ url_for('community') }}">Back</a></button>
+      <button class="logout-button"><a href="{{ url_for('logout') }}">Logout</a></button>
     </div>
 
-    <!-- Date Label & Value (Static for now) -->
-    <div style="left: 27px; top: 265px; position: absolute; color: black; 
-                font-size: 16px; font-family: Inter; font-weight: 700;">
-      Date
+    <!-- Navigation Menu -->
+    <div class="nav-menu">
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('home') }}">Home</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
+      </div>
+      <div class="menu-button active">
+        <span class="menu-text active"><a href="{{ url_for('community') }}">Community</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
+      </div>
     </div>
-    <div style="left: 240px; top: 265px; position: absolute; color: black; 
-                font-size: 16px; font-family: Inter; font-weight: 400;">
-      21 February 2025
+    
+    <h1 class="page-header">Add Log</h1>
+
+    <!-- Date display -->
+    <div class="date-display">
+      <span class="date-label">Date</span>
+      <span>21 February 2025</span>
     </div>
 
     <!-- Body Weight & Body Fat Form -->
-    <form action="{{ url_for('add_log') }}" method="POST">
-      <!-- Measurements Label -->
-      <div style="left: 27px; top: 310px; position: absolute; color: black; 
-                  font-size: 20px; font-family: Inter; font-weight: 700;">
-        Measurements
+    <form action="{{ url_for('add_log') }}" method="POST" class="profile-form">
+      <div class="measurements-header">Measurements</div>
+      
+      <!-- Body Weight -->
+      <div class="measurement-row">
+        <label for="body_weight" class="measurement-label">Body Weight</label>
+        <div class="input-container">
+          <input type="text" id="body_weight" name="body_weight" class="measurement-input" placeholder="KG" required autocomplete="off">
+          <div id="body_weight-error" class="error-message"></div>
+        </div>
       </div>
-
-      <!-- Body Weight Label -->
-      <div style="left: 27px; top: 345px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Body Weight
+      
+      <!-- Body Fat -->
+      <div class="measurement-row">
+        <label for="body_fat" class="measurement-label">Body Fat</label>
+        <div class="input-container">
+          <input type="text" id="body_fat" name="body_fat" class="measurement-input" placeholder="%" required autocomplete="off">
+          <div id="body_fat-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Body Weight Input -->
-      <input type="text" name="body_weight" placeholder="KG" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 345px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Body Fat Label -->
-      <div style="left: 27px; top: 375px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Body Fat
+      
+      <!-- Waist -->
+      <div class="measurement-row">
+        <label for="waist" class="measurement-label">Waist</label>
+        <div class="input-container">
+          <input type="text" id="waist" name="waist" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="waist-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Body Fat Input -->
-      <input type="text" name="body_fat" placeholder="%" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 375px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Waist Label -->
-      <div style="left: 27px; top: 405px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Waist
+      
+      <!-- Shoulder -->
+      <div class="measurement-row">
+        <label for="shoulder" class="measurement-label">Shoulder</label>
+        <div class="input-container">
+          <input type="text" id="shoulder" name="shoulder" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="shoulder-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Waist Input -->
-      <input type="text" name="waist" placeholder="CM" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 405px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Shoulder Label -->
-      <div style="left: 27px; top: 435px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Shoulder
+      
+      <!-- Chest -->
+      <div class="measurement-row">
+        <label for="chest" class="measurement-label">Chest</label>
+        <div class="input-container">
+          <input type="text" id="chest" name="chest" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="chest-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Shoulder Input -->
-      <input type="text" name="shoulder" placeholder="CM" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 435px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Chest Label -->
-      <div style="left: 27px; top: 465px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Chest
+      
+      <!-- Abdomen -->
+      <div class="measurement-row">
+        <label for="abdomen" class="measurement-label">Abdomen</label>
+        <div class="input-container">
+          <input type="text" id="abdomen" name="abdomen" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="abdomen-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Chest Input -->
-      <input type="text" name="chest" placeholder="CM" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 465px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Abdomen Label -->
-      <div style="left: 27px; top: 495px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Abdomen
+      
+      <!-- Hip -->
+      <div class="measurement-row">
+        <label for="hip" class="measurement-label">Hip</label>
+        <div class="input-container">
+          <input type="text" id="hip" name="hip" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="hip-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Abdomen Input -->
-      <input type="text" name="abdomen" placeholder="CM" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 495px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Hip Label -->
-      <div style="left: 27px; top: 525px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Hip
+      
+      <!-- Left Thigh -->
+      <div class="measurement-row">
+        <label for="left_thigh" class="measurement-label">Left Thigh</label>
+        <div class="input-container">
+          <input type="text" id="left_thigh" name="left_thigh" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="left_thigh-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Hip Input -->
-      <input type="text" name="hip" placeholder="CM" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 525px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Left Thigh Label -->
-      <div style="left: 27px; top: 555px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Left Thigh
+      
+      <!-- Right Thigh -->
+      <div class="measurement-row">
+        <label for="right_thigh" class="measurement-label">Right Thigh</label>
+        <div class="input-container">
+          <input type="text" id="right_thigh" name="right_thigh" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="right_thigh-error" class="error-message"></div>
+        </div>
       </div>
-      <!-- Left Thigh Input -->
-      <input type="text" name="left_thigh" placeholder="CM" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 555px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
-
-      <!-- Right Thigh Label -->
-      <div style="left: 27px; top: 585px; position: absolute; color: black; 
-                  font-size: 16px; font-family: Inter; font-weight: 400;">
-        Right Thigh
-      </div>
-      <!-- Right Thigh Input -->
-      <input type="text" name="right_thigh" placeholder="CM" required autocomplete="off"/
-             style="position: absolute; left: 240px; top: 615px; width: 60px; 
-                    color: black; font-size: 16px; font-family: Inter; 
-                    font-weight: 400; border: none; border-bottom: 1px solid black;" />
 
       <!-- Save Button -->
       <button type="submit" id="saveButton" class="save-button" disabled>Save</button>
-              <!--style="position: absolute; left: 27px; top: 650px; width: 340px; height: 36px; 
-                     background: white; border: 1px black solid; font-size: 14px; 
-                     font-weight: 400; cursor: pointer;"> 
-        Save -->
-      
     </form>
   </div>
 
   <!-- Input Validation -->
   <script>
+    // Set up validation constraints
+    const fields = {
+      "body_weight": { min: 30, max: 500 },
+      "body_fat": { min: 5, max: 60 },
+      "waist": { min: 30, max: 200 },
+      "shoulder": { min: 25, max: 70 }, 
+      "chest": { min: 30, max: 200 },
+      "abdomen": { min: 30, max: 200 },
+      "hip": { min: 30, max: 200 },
+      "left_thigh": { min: 30, max: 200 },
+      "right_thigh": { min: 30, max: 200 }
+    };
+    
     function validateForm() {
-        let isValid = true;
-
-        const fields = {
-            "body_weight": { min: 30, max: 500 },
-            "body_fat": { min: 5, max: 60 },
-            "waist": { min: 30, max: 200 },
-            "shoulder": { min: 25, max: 70 }, 
-            "chest": { min: 30, max: 200 },
-            "abdomen": { min: 30, max: 200 },
-            "hip": { min: 30, max: 200 },
-            "left_thigh": { min: 30, max: 200 },
-            "right_thigh": { min: 30, max: 200 }
-        };
-
-        for (let field in fields) {
-            const input = document.getElementById(field);
-            const error = document.getElementById(field + "-error");
-            let value = parseFloat(input.value);
-
-            if (isNaN(value) || value < fields[field].min || value > fields[field].max) {
-                error.textContent = `Value must be between ${fields[field].min} and ${fields[field].max}`;
-                isValid = false;
-            } 
-            else {
-                error.textContent = "";
-            }
+      let isValid = true;
+      
+      for (let field in fields) {
+        const input = document.getElementById(field);
+        const error = document.getElementById(field + "-error");
+        
+        if (!input || !error) continue;
+        
+        let value = parseFloat(input.value);
+        
+        if (isNaN(value) || value < fields[field].min || value > fields[field].max) {
+          error.textContent = `Value must be between ${fields[field].min} and ${fields[field].max}`;
+          isValid = false;
+        } else {
+          error.textContent = "";
         }
-
-        document.getElementById("saveButton").disabled = !isValid;
+      }
+      
+      const saveButton = document.getElementById("saveButton");
+      if (saveButton) {
+        saveButton.disabled = !isValid;
+      }
     }
-
-    document.addEventListener("DOMContentLoaded", validateForm);
+    
+    // Add event listeners to all inputs
+    document.addEventListener("DOMContentLoaded", function() {
+      for (let field in fields) {
+        const input = document.getElementById(field);
+        if (input) {
+          input.addEventListener("input", validateForm);
+        }
+      }
+      
+      validateForm();
+    });
   </script>
-
 </body>
 </html>
