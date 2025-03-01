@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community</title>
+  <title>Add Friend</title>
   <!-- Use url_for to load the CSS file from the static folder -->
   <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
 </head>
 <body>
-  <div class="container" id="community-container">
+  <div class="container">
     <div class="header">
-      <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
+        <button class="goback-button"><a href="{{ url_for('community') }}" style="text-decoration: underline;">Back</a></button>
+        <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
     </div>
 
   <!-- Navigation Menu -->
@@ -28,19 +29,7 @@
             <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
         </div>
     </div>
-    <h1 class="page-header">Community</h1>
-    <div class="button">
-      <a href=""><span class="button-text">Search</span></a>
-    </div>
-    <div class="button">
-      <a href=""><span class="button-text">Sort</span></a>
-    </div>
-    <div class="button">
-      <a href="{{ url_for('add_friend') }}"><span class="button-text">+ Friend</span></a>
-    </div>
-    <div class="button">
-      <a href="{{ url_for('add_post') }}"><span class="button-text">+ Post</span></a>
-    </div>
+    <h1 class="page-header">Add Friend</h1>
   </div>
 </body>
 </html>
