@@ -10,10 +10,10 @@
     <div class="container">
         <h1 class="title">Account Setting</h1>
         
-        <form method = "POST" action = "{{ url_for('account_setting') }}">
+        <form method="POST" action="{{ url_for('accountsetting') }}">
             <div class="form-group gender-group">
                 <label for="gender">Gender</label>
-                <select id="gender" class="form-control">
+                <select id="gender" name="gender" class="form-control">
                     <option value="" selected disabled>Select gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -24,47 +24,24 @@
 
             <div class="form-group dob-group">
                 <label for="dob">Date of Birth</label>
-                <input type="date" id="dob" class="form-control">
+                <input type="date" id="dob" name="dob" class="form-control">
             </div>
 
             <div class="form-group">
                 <h3 class="section-title">Goal</h3>
                 
                 <div class="radio-group">
-                    <input class="form-control-inline" type="radio" id="lose-weight" name="goal" onclick="showPreference()">
+                    <input class="form-control-inline" type="radio" id="lose-weight" name="goal" value="lose-weight">
                     <label for="lose-weight">Lose Weight</label>
                 </div>
                 
                 <div class="radio-group">
-                    <input class="form-control-inline" type="radio" id="better-shape" name="goal" onclick="hidePreference()">
-                    <label for="better-shape">Get In Better Body Shape</label>
+                    <input class="form-control-inline" type="radio" id="better-shape" name="goal" value="gain-muscle">
+                    <label for="better-shape">Gain Muscle</label>
                 </div>
             </div>
-            
-            <div id="preference-section" class="form-group">
-                <h3 id="preference-title" class="section-title">Preference</h3>
-                
-                <div id="preference-option" class="checkbox-group">
-                    <input class="form-control-inline" type="checkbox" id="log-measurement">
-                    <label id="preference-label" for="log-measurement">Log Body Measurement?</label>
-                </div>
-            </div>
-
-            <a href="{{ url_for('login') }}" class="save-button">Save</a>
+            <button type="submit" class="save-button">Save</button>
         </form>
     </div>
-
-    <script>
-        // Hide preference section by default
-        document.getElementById('preference-section').style.display = 'none';
-        
-        function showPreference() {
-            document.getElementById('preference-section').style.display = 'block';
-        }
-        
-        function hidePreference() {
-            document.getElementById('preference-section').style.display = 'none';
-        }
-    </script>
 </body>
 </html>

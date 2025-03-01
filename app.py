@@ -130,7 +130,7 @@ def create_app():
             
         return render_template("signup.html")
     
-    @app.route("/accountsetting")
+    @app.route("/accountsetting", methods=["GET", "POST"])
     @login_required
     def accountsetting():
         user_data = users_collection.find_one({"_id": ObjectId(current_user.id)})
@@ -139,19 +139,16 @@ def create_app():
             gender = request.form.get("gender")
             dob = request.form.get("dob")
             goal = request.form.get("goal")
-            log_measurement = request.form.get("log_measurement") == "on"
 
             # update the preferences
             update_fields = {
                 "gender": gender,
                 "dob": dob,
                 "goal": goal,
-                "log_measurement": log_measurement
             }
 
             users_collection.update_one({"_id": ObjectId(current_user.id)}, {"$set": update_fields})
-            flash("Account settings updated", "success")
-            return redirect(url_for("account_setting"))
+            return redirect(url_for("login"))
     
         return render_template("accountsetting.html", user = user_data)
 
