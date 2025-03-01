@@ -10,7 +10,7 @@
     <div class="container">
         <h1 class="title">Account Setting</h1>
         
-        <form>
+        <form method = "POST" action = "{{ url_for('account_setting') }}">
             <div class="form-group gender-group">
                 <label for="gender">Gender</label>
                 <select id="gender" class="form-control">

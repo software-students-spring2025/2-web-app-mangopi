@@ -133,7 +133,27 @@ def create_app():
     @app.route("/accountsetting")
     @login_required
     def accountsetting():
-        return render_template("accountsetting.html")
+        user_data = users_collection.find_one({"_id": ObjectId(current_user.id)})
+
+        if request.method == "POST":
+            gender = request.form.get("gender")
+            dob = request.form.get("dob")
+            goal = request.form.get("goal")
+            log_measurement = request.form.get("log_measurement") == "on"
+
+            # update the preferences
+            update_fields = {
+                "gender": gender,
+                "dob": dob,
+                "goal": goal,
+                "log_measurement": log_measurement
+            }
+
+            users_collection.update_one({"_id": ObjectId(current_user.id)}, {"$set": update_fields})
+            flash("Account settings updated", "success")
+            return redirect(url_for("account_setting"))
+    
+        return render_template("accountsetting.html", user = user_data)
 
     @app.route("/home")
     @login_required
@@ -168,6 +188,12 @@ def create_app():
             hip = request.form.get("hip")
             left_thigh = request.form.get("left_thigh")
             right_thigh = request.form.get("right_thigh")
+
+            errors = validate_measurements(body_weight, body_fat, waist, shoulder, chest, abdomen, hip, left_thigh, right_thigh)
+            if errors:
+                for error in errors:
+                    flash(error, "danger")
+                return render_template("add_log.html") 
             
             # Create a new log with user ID
             doc = {
@@ -183,7 +209,9 @@ def create_app():
                 "right_thigh": right_thigh,
                 "created_at": datetime.datetime.utcnow()
             }
+
             logs_collection.insert_one(doc)
+            flash("Log added.", "success")
             
             # Redirect to measurements after saving
             return redirect(url_for("measurements"))
@@ -210,6 +238,12 @@ def create_app():
             left_thigh = request.form.get("left_thigh")
             right_thigh = request.form.get("right_thigh")
 
+            errors = validate_measurements(body_weight, body_fat, waist, shoulder, chest, abdomen, hip, left_thigh, right_thigh)
+            if errors:
+                for error in errors:
+                    flash(error, "danger")
+                return render_template("edit_log.html", log=log)  # Reload form with errors
+
             update_fields = {
                 "body_weight": body_weight,
                 "body_fat": body_fat,
@@ -234,6 +268,54 @@ def create_app():
     def delete_log(log_id):
         logs_collection.delete_one({"_id": ObjectId(log_id), "user_id": current_user.id})
         return redirect(url_for("measurements"))
+    
+    # Value validations for input measurements by users to ensure all the info given are reasonable
+    def validate_measurements(body_weight, body_fat, waist, shoulder, chest, abdomen, hip, left_thigh, right_thigh):
+        """Validate user input to ensure measurements are within reasonable ranges."""
+        errors = []
+
+        # Define realistic measurement ranges
+        min_weight, max_weight = 30, 500  # kg
+        min_fat, max_fat = 5, 60  # %
+        min_cm, max_cm = 30, 200  # cm
+        min_shoulder, max_shoulder = 25, 70  # cm (shoulder width)
+    
+        try:
+            # Convert inputs to float for validation
+            body_weight = float(body_weight)
+            body_fat = float(body_fat)
+            waist = float(waist)
+            shoulder = float(shoulder)
+            chest = float(chest)
+            abdomen = float(abdomen)
+            hip = float(hip)
+            left_thigh = float(left_thigh)
+            right_thigh = float(right_thigh)
+        
+            # Validate each measurement
+            if not (min_weight <= body_weight <= max_weight):
+                errors.append("Body weight must be between 30kg and 500kg.")
+            if not (min_fat <= body_fat <= max_fat):
+                errors.append("Body fat percentage must be between 5% and 60%.")
+            if not (min_cm <= waist <= max_cm):
+                errors.append("Waist measurement must be between 30cm and 200cm.")
+            if not (min_shoulder <= shoulder <= max_shoulder):
+                errors.append("Shoulder width must be between 25cm and 70cm.")
+            if not (min_cm <= chest <= max_cm):
+                errors.append("Chest measurement must be between 30cm and 200cm.")
+            if not (min_cm <= abdomen <= max_cm):
+                errors.append("Abdomen measurement must be between 30cm and 200cm.")
+            if not (min_cm <= hip <= max_cm):
+                errors.append("Hip measurement must be between 30cm and 200cm.")
+            if not (min_cm <= left_thigh <= max_cm):
+                errors.append("Left thigh measurement must be between 30cm and 200cm.")
+            if not (min_cm <= right_thigh <= max_cm):
+                errors.append("Right thigh measurement must be between 30cm and 200cm.")
+
+        except ValueError:
+            errors.append("Invalid measurement value.")
+
+        return errors
 
     @app.route("/")
     def index():
