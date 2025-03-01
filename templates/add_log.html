@@ -165,13 +165,51 @@
                     font-weight: 400; border: none; border-bottom: 1px solid black;" />
 
       <!-- Save Button -->
-      <button type="submit" 
-              style="position: absolute; left: 27px; top: 650px; width: 340px; height: 36px; 
+      <button type="submit" id="saveButton" class="save-button" disabled>Save</button>
+              <!--style="position: absolute; left: 27px; top: 650px; width: 340px; height: 36px; 
                      background: white; border: 1px black solid; font-size: 14px; 
-                     font-weight: 400; cursor: pointer;">
-        Save
-      </button>
+                     font-weight: 400; cursor: pointer;"> 
+        Save -->
+      
     </form>
   </div>
+
+  <!-- Input Validation -->
+  <script>
+    function validateForm() {
+        let isValid = true;
+
+        const fields = {
+            "body_weight": { min: 30, max: 500 },
+            "body_fat": { min: 5, max: 60 },
+            "waist": { min: 30, max: 200 },
+            "shoulder": { min: 25, max: 70 }, 
+            "chest": { min: 30, max: 200 },
+            "abdomen": { min: 30, max: 200 },
+            "hip": { min: 30, max: 200 },
+            "left_thigh": { min: 30, max: 200 },
+            "right_thigh": { min: 30, max: 200 }
+        };
+
+        for (let field in fields) {
+            const input = document.getElementById(field);
+            const error = document.getElementById(field + "-error");
+            let value = parseFloat(input.value);
+
+            if (isNaN(value) || value < fields[field].min || value > fields[field].max) {
+                error.textContent = `Value must be between ${fields[field].min} and ${fields[field].max}`;
+                isValid = false;
+            } 
+            else {
+                error.textContent = "";
+            }
+        }
+
+        document.getElementById("saveButton").disabled = !isValid;
+    }
+
+    document.addEventListener("DOMContentLoaded", validateForm);
+  </script>
+
 </body>
 </html>
