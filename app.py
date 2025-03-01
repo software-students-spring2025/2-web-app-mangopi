@@ -161,22 +161,36 @@ def create_app():
     @app.route("/measurements")
     @login_required
     def measurements():
-        return render_template("measurements.html")
+        logs = logs_collection.find({"user_id": current_user.id}).sort("created_at", -1)
+        return render_template("measurements.html", logs=logs)
 
     @app.route("/community")
     @login_required
     def community():
-        return render_template("community.html")
+        # Get latest posts
+        posts = db.posts.find().sort("created_at", -1)  
+        friends = db.users.find({"_id": {"$ne": ObjectId(current_user.id)}})  
+
+        return render_template("community.html", posts=posts, friends=friends)
     
     @app.route("/add_friend")
     @login_required
     def add_friend():
-        return render_template("add_friend.html")
+        friend_id = request.form.get("friend_id")
+        if friend_id:
+            db.users.update_one({"_id": ObjectId(current_user.id)}, {"$addToSet": {"friends": ObjectId(friend_id)}})
+            flash("Friend added!", "success")
+        return redirect(url_for("community"))
     
     @app.route("/add_post")
     @login_required
     def add_post():
-        return render_template("add_post.html")
+        content = request.form.get("content")
+        if content:
+            post = {"user_id": current_user.id, "content": content, "created_at": datetime.datetime.utcnow()}
+            db.posts.insert_one(post)
+            flash("Post added!", "success")
+        return redirect(url_for("community"))
 
     @app.route("/profile", methods=["GET", "POST"])
     @login_required
@@ -186,25 +200,21 @@ def create_app():
             # We need to use current_app to access the application context if db is stored there
             from flask import current_app
             
-            # Get the user data - basic information only as fallback
-            user_data = {
-                "name": current_user.name,
-                "email": current_user.email,
-                # Default values for other fields
-                "gender": "",
-                "dob": "",
-                "goal": ""
-            }
+            # Fetch user data from the database
+            user_data = db.users.find_one({"_id": ObjectId(current_user.id)})
+
+            if request.method == "POST":
+                gender = request.form.get("gender")
+                dob = request.form.get("dob")
+                goal = request.form.get("goal")
+
+                # Allowing update the user's profile fields in MongoDB
+                db.users.update_one({"_id": ObjectId(current_user.id)}, {"$set": {"gender": gender, "dob": dob, "goal": goal}})
+                flash("Profile updated!", "success")
+
+                # Redirect back to /profile with updated data
+                return redirect(url_for("profile"))
             
-            # Attempt to get complete user data from the database
-            db_user = db.users.find_one({"_id": ObjectId(current_user.id)})
-            if db_user:
-                # Update our user_data with database values
-                # This will only override fields that exist in db_user
-                for key in db_user:
-                    if key != "_id" and key != "password":  # Skip sensitive fields
-                        user_data[key] = db_user[key]
-                        
             return render_template("profile.html", user=user_data)
                 
         except Exception as e:
