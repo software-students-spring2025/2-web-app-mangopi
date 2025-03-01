@@ -33,7 +33,7 @@ body {
     left: 0;
     right: 0;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* This allows space between items */
     padding: 15px 30px;
     background-color: white;
     z-index: 1000;
@@ -43,6 +43,18 @@ body {
 }
 
 .logout-button {
+    font-size: 14px;
+    color: #666;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+    margin-left: auto; /* This pushes the button to the right */
+}
+
+.goback-button {
     font-size: 14px;
     color: #666;
     background: none;
@@ -191,4 +203,21 @@ a {
 a:hover {
     color: #333;
     text-decoration: none;
+}
+
+#community-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#community-container .page-header {
+    width: 100%;
+}
+
+#community-container .button {
+    width: 23%; /* Slightly less than 25% to account for margins */
+    margin-top: 20px;
+    margin-right: 1%;
+    margin-left: 1%;
 }

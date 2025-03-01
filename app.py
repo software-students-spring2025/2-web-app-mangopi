@@ -167,6 +167,16 @@ def create_app():
     @login_required
     def community():
         return render_template("community.html")
+    
+    @app.route("/add_friend")
+    @login_required
+    def add_friend():
+        return render_template("add_friend.html")
+    
+    @app.route("/add_post")
+    @login_required
+    def add_post():
+        return render_template("add_post.html")
 
     @app.route("/profile", methods=["GET", "POST"])
     @login_required
