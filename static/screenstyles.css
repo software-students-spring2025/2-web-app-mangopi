@@ -29,7 +29,7 @@ body {
 /* Fixed header with logout */
 .header {
     position: fixed;
-    top: 10px;
+    top: 0px;
     left: 0;
     right: 0;
     display: flex;
