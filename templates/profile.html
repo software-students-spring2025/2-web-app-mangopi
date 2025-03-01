@@ -37,36 +37,36 @@
         <div class="profile-form">
             <div class="form-group">
                 <label class="form-label">Name:</label>
-                <input type="text" class="input-field" placeholder="Enter your name">
+                <input readonly type="text" class="input-field" placeholder="Enter your name" value="{{ user.name }}">
             </div>
             
             <div class="form-group">
                 <label class="form-label">Email:</label>
-                <input type="email" class="input-field" placeholder="Enter your email">
+                <input readonly type="email" class="input-field" placeholder="Enter your email" value="{{ user.email }}">
             </div>
             
             <div class="form-group">
                 <label class="form-label">Gender:</label>
-                <select class="input-field">
+                <select class="input-field" disabled>
                     <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    <option value="prefer-not-to-say">Prefer not to say</option>
+                    <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Female</option>
+                    <option value="other" {% if user.gender == 'other' %}selected{% endif %}>Other</option>
+                    <option value="prefer-not-to-say" {% if user.gender == 'prefer-not-to-say' %}selected{% endif %}>Prefer not to say</option>
                 </select>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Date of Birth:</label>
-                <input type="date" class="input-field">
+                <input readonly type="date" class="input-field" value="{{ user.dob }}">
             </div>
             
             <div class="form-group">
                 <label class="form-label">Goal:</label>
-                <select class="input-field">
+                <select class="input-field" disabled>
                     <option value="">Select your goal</option>
-                    <option value="lose-weight">Lose Weight</option>
-                    <option value="gain-muscle">Gain Muscle</option>
+                    <option value="lose-weight" {% if user.goal == 'lose-weight' %}selected{% endif %}>Lose Weight</option>
+                    <option value="gain-muscle" {% if user.goal == 'gain-muscle' %}selected{% endif %}>Gain Muscle</option>
                 </select>
             </div>
         </div>

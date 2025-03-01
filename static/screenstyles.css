@@ -29,7 +29,7 @@ body {
 /* Fixed header with logout */
 .header {
     position: fixed;
-    top: 50px;
+    top: 10px;
     left: 0;
     right: 0;
     display: flex;
@@ -56,7 +56,7 @@ body {
 /* Fixed Navigation menu */
 .nav-menu {
     position: fixed;
-    top: 100px; /* Position below the header */
+    top: 60px; /* Position below the header */
     left: 0;
     right: 0;
     display: flex;
@@ -103,6 +103,7 @@ body {
     text-align: center;
     font-size: 32px;
     font-weight: 600;
+    margin-top: 5px;
     margin-bottom: 30px;
     color: #333;
 }

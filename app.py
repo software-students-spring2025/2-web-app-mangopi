@@ -149,7 +149,8 @@ def create_app():
 
             users_collection.update_one({"_id": ObjectId(current_user.id)}, {"$set": update_fields})
             return redirect(url_for("login"))
-    
+        
+        flash("No Error Message (Debug)")
         return render_template("accountsetting.html", user = user_data)
 
     @app.route("/home")
@@ -167,9 +168,38 @@ def create_app():
     def community():
         return render_template("community.html")
 
-    @app.route("/profile")
+    @app.route("/profile", methods=["GET", "POST"])
     @login_required
     def profile():
+        try:
+            # Access the MongoDB collection properly
+            # We need to use current_app to access the application context if db is stored there
+            from flask import current_app
+            
+            # Get the user data - basic information only as fallback
+            user_data = {
+                "name": current_user.name,
+                "email": current_user.email,
+                # Default values for other fields
+                "gender": "",
+                "dob": "",
+                "goal": ""
+            }
+            
+            # Attempt to get complete user data from the database
+            db_user = db.users.find_one({"_id": ObjectId(current_user.id)})
+            if db_user:
+                # Update our user_data with database values
+                # This will only override fields that exist in db_user
+                for key in db_user:
+                    if key != "_id" and key != "password":  # Skip sensitive fields
+                        user_data[key] = db_user[key]
+                        
+            return render_template("profile.html", user=user_data)
+                
+        except Exception as e:
+                print(f"Error in profile route: {e}")
+        # Return a basic template without user data to avoid errors
         return render_template("profile.html")
 
     @app.route("/add_log", methods=["GET", "POST"])
