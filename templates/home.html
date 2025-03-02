@@ -10,25 +10,36 @@
 <body>
   <div class="container">
     <div class="header">
-      <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
+      <button class="logout-button">
+        <a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a>
+      </button>
     </div>
 
-  <!-- Navigation Menu -->
+    <!-- Navigation Menu -->
     <div class="nav-menu">
-        <div class="menu-button active">
-            <span class="menu-text active"> <a href="{{ url_for('home') }}">Home</a></span>
-        </div>
-        <div class="menu-button">
-            <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
-        </div>
-        <div class="menu-button">
-            <span class="menu-text"><a href="{{ url_for('community') }}">Community</a></span>
-        </div>
-        <div class="menu-button">
-            <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
-        </div>
+      <div class="menu-button active">
+        <span class="menu-text active"><a href="{{ url_for('home') }}">Home</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('community') }}">Community</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
+      </div>
     </div>
+
     <h1 class="page-header">Home</h1>
+    
+    <!-- Trend Analysis Section -->
+    <div class="trend-section" style="margin-top: 40px; text-align: center;">
+      <h2>Trend Analysis</h2>
+      <div id="trend-plot">
+        {{ plot_html|safe }}
+      </div>
+    </div>
   </div>
 </body>
 </html>
