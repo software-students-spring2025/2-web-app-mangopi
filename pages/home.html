@@ -4,41 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="container">
-        <a href="home.html" style="position: absolute; left: 17px; top: 82px; width: 72px; height: 36px; display: block;">
+        <!-- Navigation buttons -->
+        <a href="{{ url_for('home') }}" style="position: absolute; left: 17px; top: 82px; width: 72px; height: 36px; display: block;">
             <div style="width: 100%; height: 100%; background: #D9D9D9; border: 1px black solid"></div>
             <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 10px; font-weight: 700;">Home</div>
         </a>
-
-        <a href="measurements.html" style="position: absolute; left: 113px; top: 82px; width: 72px; height: 36px; display: block;">
+        <a href="{{ url_for('measurements') }}" style="position: absolute; left: 113px; top: 82px; width: 72px; height: 36px; display: block;">
             <div style="width: 100%; height: 100%; background: white; border: 1px black solid"></div>
             <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 10px; font-weight: 400;">Measurements</div>
         </a>
-
-        <a href="community.html" style="position: absolute; left: 209px; top: 82px; width: 72px; height: 36px; display: block;">
+        <a href="{{ url_for('community') }}" style="position: absolute; left: 209px; top: 82px; width: 72px; height: 36px; display: block;">
             <div style="width: 100%; height: 100%; background: white; border: 1px black solid"></div>
             <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 10px; font-weight: 400;">Community</div>
         </a>
-
-        <a href="profile.html" style="position: absolute; left: 305px; top: 82px; width: 72px; height: 36px; display: block;">
+        <a href="{{ url_for('profile') }}" style="position: absolute; left: 305px; top: 82px; width: 72px; height: 36px; display: block;">
             <div style="width: 100%; height: 100%; background: white; border: 1px black solid"></div>
             <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 10px; font-weight: 400;">Profile</div>
         </a>
 
-        <div style="left: 143px; top: 193px; position: absolute; text-align: center; color: black; font-size: 36px; font-family: Inter; font-weight: 400; word-wrap: break-word">HOME</div>
-        <div style="width: 340px; height: 263px; left: 27px; top: 293px; position: absolute">
-            <div style="width: 340px; height: 263px; left: 0px; top: 0px; position: absolute; border: 1px black solid"></div>
+        <!-- Existing Home Content -->
+        <div style="left: 143px; top: 193px; position: absolute; text-align: center; color: black; font-size: 36px; font-family: Inter; font-weight: 400;">HOME</div>
+        <!-- ... other home page content ... -->
+
+        <!-- New Trend Analysis Section -->
+        <div style="position: absolute; left: 27px; top: 750px; width: 600px;">
+            <h2 style="font-family: Inter; color: black;">Trend Analysis</h2>
+            <p style="font-family: Inter; color: black;">Click the plot below to view detailed trends in your measurements over time.</p>
+            <a href="{{ url_for('trend') }}">
+                <img src="{{ url_for('static', filename=trend_image) }}" alt="Trend Analysis" style="width:100%; max-width:600px; border:1px solid #ccc; box-shadow: 0px 0px 8px rgba(0,0,0,0.2);">
+            </a>
         </div>
-        <div style="left: 26px; top: 265px; position: absolute; text-align: center; color: black; font-size: 20px; font-family: Inter; font-weight: 700; word-wrap: break-word">Calendar</div>
-        <div style="left: 24px; top: 584px; position: absolute; text-align: center; color: black; font-size: 20px; font-family: Inter; font-weight: 700; word-wrap: break-word">10 Day Average</div>
-        <div style="left: 27px; top: 632px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Body Weight</div>
-        <div style="left: 315px; top: 632px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">xxx KG</div>
-        <div style="left: 27px; top: 665px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">Body Fat</div>
-        <div style="left: 324px; top: 665px; position: absolute; text-align: center; color: black; font-size: 16px; font-family: Inter; font-weight: 400; word-wrap: break-word">xxx %</div>
-        <div style="left: 302px; top: 274px; position: absolute; text-align: center; color: black; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">Streak = xx</div>
     </div>
 </body>
 </html>
