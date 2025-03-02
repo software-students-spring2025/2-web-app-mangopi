@@ -162,14 +162,14 @@ def create_app():
         # Query logs for the current user sorted in ascending order by creation time.
         logs = list(logs_collection.find({"user_id": "12345"}).sort("created_at", 1)) # Replace current_user.id with 12345 for data visualization
         if logs:
-            # Extract timestamps and measurement data from the logs.
+
             timestamps = [log["created_at"] for log in logs]
             body_weight = [float(log["body_weight"]) for log in logs]
             body_fat = [float(log["body_fat"]) for log in logs]
             
             #TODO: Add AI Analysis of the data trend and advice heres
             
-            # Create a dual-axis Plotly figure.
+
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             fig.add_trace(
                 go.Scatter(x=timestamps, y=body_weight, mode="lines+markers", name="Body Weight (kg)"),
@@ -180,7 +180,6 @@ def create_app():
                 secondary_y=True
             )
             
-            # Update axes and layout.
             fig.update_xaxes(title_text="Date")
             fig.update_yaxes(title_text="Body Weight (kg)", secondary_y=False, tickfont=dict(color="blue"))
             fig.update_yaxes(title_text="Body Fat (%)", secondary_y=True, tickfont=dict(color="red"))
@@ -188,7 +187,6 @@ def create_app():
                 legend=dict(x=0, y=1.1, orientation="h")
             )
             
-            # Convert the Plotly figure to an HTML fragment.
             plot_html = pio.to_html(fig, full_html=False)
         else:
             plot_html = "<p>You haven't added your body information yet. Start Now!</p>"
