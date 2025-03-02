@@ -193,6 +193,16 @@ def create_app():
     def search():
         return render_template("search.html")
     
+    @app.route("/postlist")
+    @login_required
+    def postlist():
+        return render_template("postlist.html")
+    
+    @app.route("/edit_post")
+    @login_required
+    def edit_post():
+        return render_template("edit_post.html")
+    
     @app.route("/add_post")
     @login_required
     def add_post():

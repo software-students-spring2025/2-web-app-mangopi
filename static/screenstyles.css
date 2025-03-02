@@ -15,16 +15,18 @@ body {
     min-height: 100vh;
     background-color: white;
     font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .container {
+    position: relative; /* Not fixed */
     width: 100%;
     max-width: 400px;
     padding: 40px 30px;
-    background: white;
-    position: relative;
-    padding-top: 30px;
-}
+    margin: 0 auto;
+    padding-top: 100px; /* Increased to accommodate fixed header and nav */
+  }
 
 /* Fixed header with logout */
 .header {
@@ -441,18 +443,6 @@ a:hover {
     cursor: pointer;
   }
 
-#community-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: 30px;
-}
-
-#community-actions .button {
-    width: 30%; /* Makes 3 buttons fit on one row with spacing */
-    margin-bottom: 10px;
-}
-
 .post-container {
     width: 100%;
     margin-top: 20px;
@@ -461,4 +451,88 @@ a:hover {
     background-color: white;
     overflow: hidden;
     margin-bottom: 20px; /* Add space between multiple posts */
+}
+  
+  /* Button container */
+  #community-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    width: 100%;
+  }
+  
+  #community-actions .button {
+    width: 30%;
+  }
+  
+  /* Post feed container */
+  #post-feed {
+    width: 100%;
+  }
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.button-container .button {
+    flex: 1;
+    height: 44px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-container .button:hover {
+    background: #555;
+}
+
+.post-record {
+    border: 1px solid #ddd;
+    padding: 10px 10px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 6px;
+}
+
+.post-date1 {
+    font-size: 16px;
+    font-weight: 400;
+    color: #333;
+}
+
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.post-action {
+    font-size: 14px;
+    color: #666;
+    text-decoration: underline;
+}
+
+.post-action:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+#listheader {
+    padding-bottom: 50px;
+}
+
+#listrecord{
+    padding-bottom: 200px;
 }

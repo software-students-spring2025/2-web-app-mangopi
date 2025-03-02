@@ -9,8 +9,8 @@
 <body>
   <div class="container">
     <div class="header">
-      <button class="goback-button"><a href="{{ url_for('community') }}">Back</a></button>
-      <button class="logout-button"><a href="{{ url_for('logout') }}">Logout</a></button>
+      <button class="goback-button"><a href="{{ url_for('measurements') }}" style="text-decoration: underline;">Back</a></button>
+      <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
     </div>
 
     <!-- Navigation Menu -->
@@ -18,11 +18,11 @@
       <div class="menu-button">
         <span class="menu-text"><a href="{{ url_for('home') }}">Home</a></span>
       </div>
-      <div class="menu-button">
-        <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
-      </div>
       <div class="menu-button active">
-        <span class="menu-text active"><a href="{{ url_for('community') }}">Community</a></span>
+        <span class="menu-text active"><a href="{{ url_for('measurements') }}">Measurements</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('community') }}">Community</a></span>
       </div>
       <div class="menu-button">
         <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>

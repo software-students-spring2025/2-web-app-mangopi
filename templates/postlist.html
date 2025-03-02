@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friend List</title>
+    <title>Post List</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -30,13 +30,15 @@
                 <span class="menu-text active"><a href="{{ url_for('profile') }}">Profile</a></span>
             </div>
         </div>
+        
+        <h1 id="listheader" class="page-header">Post List</h1>
 
-        <h1 id="listheader" class="page-header">Friend List</h1>
         <div id="listrecord">
             <!-- Sample Record -->
             <div class="post-record">
-                <div class="post-date1">User xxx (email@example.com)</div>
+                <div class="post-date1">March 1st, 2025</div>
                 <div class="post-actions">
+                    <a href="{{ url_for('edit_post') }}" class="post-action">edit</a>
                     <a href="#" class="post-action">delete</a>
                 </div>
             </div>

@@ -72,9 +72,16 @@
         </div>
         
         <!-- Button -->
-        <div class="button">
-            <a href="{{ url_for('friendlist') }}"><span class="button-text">View Friend List</span></a>
+        <div class="button-container">
+            <div class="button"><a href="{{ url_for('friendlist') }}"><span class="button-text">View Friend List</span></a></div>
+            <div class="button"><a href="{{ url_for('postlist') }}"><span class="button-text">View Post</span></a></div>
         </div>
     </div>
+    <script>
+        // Force scroll to top when page loads
+        window.onload = function() {
+          window.scrollTo(0, 0);
+        }
+      </script>
 </body>
 </html>
