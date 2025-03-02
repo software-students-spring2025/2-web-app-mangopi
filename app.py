@@ -180,7 +180,18 @@ def create_app():
         if friend_id:
             db.users.update_one({"_id": ObjectId(current_user.id)}, {"$addToSet": {"friends": ObjectId(friend_id)}})
             flash("Friend added!", "success")
-        return redirect(url_for("community"))
+            return redirect(url_for("community"))
+        return render_template("add_friend.html")
+    
+    @app.route("/friendlist")
+    @login_required
+    def friendlist():
+        return render_template("friendlist.html")
+    
+    @app.route("/search")
+    @login_required
+    def search():
+        return render_template("search.html")
     
     @app.route("/add_post")
     @login_required
@@ -190,7 +201,8 @@ def create_app():
             post = {"user_id": current_user.id, "content": content, "created_at": datetime.datetime.utcnow()}
             db.posts.insert_one(post)
             flash("Post added!", "success")
-        return redirect(url_for("community"))
+            return redirect(url_for("community"))
+        return render_template("add_post.html")
 
     @app.route("/profile", methods=["GET", "POST"])
     @login_required

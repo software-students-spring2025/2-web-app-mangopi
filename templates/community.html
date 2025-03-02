@@ -4,43 +4,111 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Community</title>
-  <!-- Use url_for to load the CSS file from the static folder -->
   <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
+  <style>
+    /* Override any conflicting styles */
+    body {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    
+    .container {
+      position: relative; /* Not fixed */
+      width: 100%;
+      max-width: 400px;
+      padding: 40px 30px;
+      margin: 0 auto;
+      padding-top: 100px; /* Increased to accommodate fixed header and nav */
+    }
+    
+    /* Makes the posts display stacked properly */
+    .post-container {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    
+    /* Button container */
+    #community-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+    
+    #community-actions .button {
+      width: 30%;
+    }
+    
+    /* Post feed container */
+    #post-feed {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-  <div class="container" id="community-container">
-    <div class="header">
-      <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
-    </div>
+  <!-- Fixed header -->
+  <div class="header">
+    <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
+  </div>
 
-  <!-- Navigation Menu -->
-    <div class="nav-menu">
-        <div class="menu-button">
-            <span class="menu-text"> <a href="{{ url_for('home') }}">Home</a></span>
-        </div>
-        <div class="menu-button">
-            <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
-        </div>
-        <div class="menu-button active">
-            <span class="menu-text active"><a href="{{ url_for('community') }}">Community</a></span>
-        </div>
-        <div class="menu-button">
-            <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
-        </div>
+  <!-- Fixed Navigation Menu -->
+  <div class="nav-menu">
+    <div class="menu-button">
+      <span class="menu-text"><a href="{{ url_for('home') }}">Home</a></span>
     </div>
-    <h1 class="page-header">Community</h1>
-    <div class="button">
-      <a href=""><span class="button-text">Search</span></a>
+    <div class="menu-button">
+      <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
     </div>
-    <div class="button">
-      <a href=""><span class="button-text">Sort</span></a>
+    <div class="menu-button active">
+      <span class="menu-text active"><a href="{{ url_for('community') }}">Community</a></span>
     </div>
-    <div class="button">
-      <a href="{{ url_for('add_friend') }}"><span class="button-text">+ Friend</span></a>
-    </div>
-    <div class="button">
-      <a href="{{ url_for('add_post') }}"><span class="button-text">+ Post</span></a>
+    <div class="menu-button">
+      <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
     </div>
   </div>
+  
+  <!-- Main content container -->
+  <div class="container">
+    <h1 class="page-header">Community</h1>
+    
+    <!-- Community Action Buttons -->
+    <div id="community-actions">
+      <div class="button">
+        <a href="{{ url_for('search') }}"><span class="button-text">Search</span></a>
+      </div>
+      <div class="button">
+        <a href="{{ url_for('add_friend') }}"><span class="button-text">+ Friend</span></a>
+      </div>
+      <div class="button">
+        <a href="{{ url_for('add_post') }}"><span class="button-text">+ Post</span></a>
+      </div>
+    </div>
+    
+    <!-- Post Feed - All posts contained here -->
+    <div id="post-feed">
+      <!-- First Post -->
+      <div class="post-container">
+        <div class="post-header">
+          <div class="post-user">Jane Doe</div>
+          <div class="post-visibility">(Friends)</div>
+        </div>
+        <div class="post-date">Yesterday</div>
+        <div class="post-content">
+          Just completed my daily workout routine! Made good progress on my fitness goals this week. Feeling energized and motivated to keep going.
+        </div>
+        <div class="post-actions">
+          <button class="post-action-button">Like</button>
+          <button class="post-action-button">Comment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Force scroll to top when page loads
+    window.onload = function() {
+      window.scrollTo(0, 0);
+    }
+  </script>
 </body>
 </html>
