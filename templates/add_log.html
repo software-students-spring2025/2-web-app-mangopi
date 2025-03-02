@@ -129,18 +129,16 @@
 
   <!-- Input Validation & Live Date Update -->
   <script>
-    // Function to update the current date display dynamically.
+
     function updateDate() {
       const now = new Date();
       const options = { day: 'numeric', month: 'long', year: 'numeric' };
       const formattedDate = now.toLocaleDateString(undefined, options);
       document.getElementById("current-date").textContent = formattedDate;
     }
-    // Update the date immediately and then once per minute.
     updateDate();
     setInterval(updateDate, 60000);
 
-    // Set up validation constraints
     const fields = {
       "body_weight": { min: 30, max: 500 },
       "body_fat": { min: 5, max: 60 },
