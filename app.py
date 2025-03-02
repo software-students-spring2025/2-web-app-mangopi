@@ -164,28 +164,48 @@ def create_app():
         if logs:
 
             timestamps = [log["created_at"] for log in logs]
-            body_weight = [float(log["body_weight"]) for log in logs]
-            body_fat = [float(log["body_fat"]) for log in logs]
+        
+            # All keys to display
+            measurement_keys = [
+                "body_weight", "body_fat", "waist", 
+                "shoulder", "chest", "abdomen", 
+                "hip", "left_thigh", "right_thigh"
+            ]
             
             #TODO: Add AI Analysis of the data trend and advice heres
             
 
-            fig = make_subplots(specs=[[{"secondary_y": True}]])
-            fig.add_trace(
-                go.Scatter(x=timestamps, y=body_weight, mode="lines+markers", name="Body Weight (kg)"),
-                secondary_y=False
-            )
-            fig.add_trace(
-                go.Scatter(x=timestamps, y=body_fat, mode="lines+markers", name="Body Fat (%)"),
-                secondary_y=True
+            measurements = {}
+            for key in measurement_keys:
+                measurements[key] = [float(log[key]) for log in logs if key in log and log[key] is not None]
+            
+            num_measurements = len(measurement_keys)
+            fig = make_subplots(
+                rows=num_measurements, cols=1,
+                shared_xaxes=True,
+                vertical_spacing=0.03,
+                subplot_titles=[key.replace("_", " ").title() for key in measurement_keys]
             )
             
-            fig.update_xaxes(title_text="Date")
-            fig.update_yaxes(title_text="Body Weight (kg)", secondary_y=False, tickfont=dict(color="blue"))
-            fig.update_yaxes(title_text="Body Fat (%)", secondary_y=True, tickfont=dict(color="red"))
+            row = 1
+            for key in measurement_keys:
+                if measurements[key]:
+                    fig.add_trace(
+                        go.Scatter(
+                            x=timestamps, 
+                            y=measurements[key],
+                            mode="lines+markers",
+                            name=key
+                        ),
+                        row=row, col=1
+                    )
+                row += 1
+            
             fig.update_layout(
-                legend=dict(x=0, y=1.1, orientation="h")
+                height=250 * num_measurements,
+                title_text="Trend Analysis: Your Measurements"
             )
+        
             
             plot_html = pio.to_html(fig, full_html=False)
         else:

@@ -34,12 +34,19 @@
     <h1 class="page-header">Home</h1>
     
     <!-- Trend Analysis Section -->
-    <div class="trend-section" style="margin-top: 40px; text-align: center;">
+    <div class="trend-section">
       <h2>Trend Analysis</h2>
       <div id="trend-plot">
         {{ plot_html|safe }}
       </div>
+      <button class="reset-button" onclick="resetTrend()">Reset Trend</button>
     </div>
   </div>
+
+  <script>
+    function resetTrend() {
+      location.reload();
+    }
+  </script>
 </body>
 </html>
