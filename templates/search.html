@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Friend</title>
+  <title>Search</title>
   <!-- Use url_for to load the CSS file from the static folder -->
   <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
 </head>
@@ -29,11 +29,33 @@
             <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
         </div>
     </div>
-    <h1 id="addfriendheader" class="page-header">Add Friend</h1>
+    <h1 id="addfriendheader" class="page-header">Search</h1>
     <form action="{{ url_for('add_friend') }}" method="POST" class="profile-form">
-      <input id="addfriendinput" type="text" name="email" class="input-field" placeholder="Email" required autocomplete="off">
-      <div class="button"><a href=""><span class="button-text">Add</span></a></div>
+      <div id="search-container">
+        <input id="addfriendinput" type="text" name="email" class="input-field" placeholder="Enter Keyword" required autocomplete="off">
+        <button type="submit" id="search-button">
+          <span class="button-text">Search</span>
+        </button>
+      </div>
     </form>
+    <div id="post-feed">
+      <!-- First Post -->
+      <div class="post-container">
+        <div class="post-header">
+          <div class="post-user">Jane Doe</div>
+          <div class="post-visibility">(Friends)</div>
+        </div>
+        <div class="post-date">Yesterday</div>
+        <div class="post-content">
+          Just completed my daily workout routine! Made good progress on my fitness goals this week. Feeling energized and motivated to keep going.
+        </div>
+        <div class="post-actions">
+          <button class="post-action-button">Like</button>
+          <button class="post-action-button">Comment</button>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 </body>
 </html>

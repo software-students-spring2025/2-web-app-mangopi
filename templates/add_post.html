@@ -30,6 +30,32 @@
         </div>
     </div>
     <h1 class="page-header">Add Post</h1>
+    <form action="{{ url_for('add_post') }}" method="POST" class="profile-form">
+      <textarea id="postcontent" name="content" class="input-field" placeholder="Write your post here..." required autocomplete="off"></textarea>
+      
+      <div class="form-group">
+        <div id="privacy-settings">
+          <p>Who can see?</p>
+          <div id="privacy-checkbox-group">
+            <label><input type="radio" name="privacy" value="private"> Private</label>
+            <label><input type="radio" name="privacy" value="friends"> Friend ONLY</label>
+            <label><input type="radio" name="privacy" value="public"> Public</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div id="tag-settings">
+          <p>Tag #</p>
+          <div id="tag-checkbox-group">
+            <label><input type="checkbox" name="tag" value="lose_weight"> Lose Weight</label>
+            <label><input type="checkbox" name="tag" value="gain_muscle"> Gain Muscle</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="button"><a href=""><span class="button-text">Post</span></a></div>
+    </form>
   </div>
 </body>
 </html>
