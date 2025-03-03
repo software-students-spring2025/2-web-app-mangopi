@@ -9,8 +9,10 @@ from bson.objectid import ObjectId
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.io as pio
+import openai 
 
 load_dotenv(override=True)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # User class for Flask-Login
 class User(UserMixin):
@@ -48,6 +50,7 @@ def create_app():
     db = cxn[MONGO_DBNAME]
     logs_collection = db["demo_logs_test"] # TODO: Configure correct db for add_log
     users_collection = db["users"]  # Collection for user data
+    posts_collection = db["posts"]
 
     try:
         cxn.admin.command("ping")
@@ -156,14 +159,79 @@ def create_app():
         flash("No Error Message (Debug)")
         return render_template("accountsetting.html", user = user_data)
 
+    # Generate AI-driven feedback for users' fitness progress
+    def generate_fitness_feedback(logs, user_goal):
+        if not logs or len(logs) < 2:
+            return "You haven't recorded enough data yet. Keep tracking your progress!"
+        
+        # Extract measurement trends
+        first_log = logs[0]
+        latest_log = logs[-1]
+        changes = {}
+
+        measurement_fields = [
+            "body_weight", "body_fat", "waist", "shoulder", "chest",
+            "abdomen", "hip", "left_thigh", "right_thigh"
+        ]
+
+        # Analyze trends
+        for field in measurement_fields:
+            try:
+                initial = float(first_log.get(field, 0))
+                latest = float(latest_log.get(field, 0))
+                change = latest - initial
+                changes[field] = change
+            except ValueError:
+                continue
+    
+        # AI prompt for fitness insights
+        trend_summary = []
+        for field, change in changes.items():
+            trend_summary.append(f"{field.replace('_', ' ').title()} changed by {change:.1f} cm/kg.")
+
+        trend_text = " ".join(trend_summary)
+
+        # Personalized the prompt based on the users' goal
+        goal_text = (
+            "weight loss" if user_goal == "lose-weight" 
+            else "muscle building and body shaping"
+        )
+
+        prompt = f"""
+        You are a professional fitness trainer. The user has a goal of {goal_text}.
+        Here are their progress changes:
+        {trend_text}
+        Provide personalized feedback based on their progress, including recommendations for diet and exercise.
+        """
+
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are a fitness expert providing personalized advice."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            print(f"Error generating AI feedback: {e}")
+            return "Could not generate AI insights at this time."
+        
+
     @app.route("/home")
     @login_required
     def home():
         # Query logs for the current user sorted in ascending order by creation time.
         logs = list(logs_collection.find({"user_id": "12345"}).sort("created_at", 1)) # Replace current_user.id with 12345 for data visualization
+        user_data = users_collection.find_one({"_id": ObjectId(current_user.id)})
+        user_goal = user_data.get("goal", "lose-weight")  # Default to weight loss if goal is missing
+
+        # Generate AI-based feedback
+        ai_feedback = generate_fitness_feedback(logs, user_goal)
+
         if logs:
 
-            timestamps = [log["created_at"] for log in logs]
+            timestamps = [log.get("created_at") for log in logs if "created_at" in log and log["created_at"] is not None]
         
             # All keys to display
             measurement_keys = [
@@ -172,46 +240,49 @@ def create_app():
                 "hip", "left_thigh", "right_thigh"
             ]
             
-            #TODO: Add AI Analysis of the data trend and advice heres
+            measurements = {
+                key: [float(log[key]) for log in logs if key in log and log[key] is not None and isinstance(log[key], (int, float))]
+                for key in measurement_keys
+            }
             
-
-            measurements = {}
-            for key in measurement_keys:
-                measurements[key] = [float(log[key]) for log in logs if key in log and log[key] is not None]
+            num_measurements = sum(1 for key in measurement_keys if measurements[key])
             
-            num_measurements = len(measurement_keys)
-            fig = make_subplots(
-                rows=num_measurements, cols=1,
-                shared_xaxes=True,
-                vertical_spacing=0.03,
-                subplot_titles=[key.replace("_", " ").title() for key in measurement_keys]
-            )
+            if num_measurements > 0:
+                fig = make_subplots(
+                    rows=num_measurements, cols=1,
+                    shared_xaxes=True,
+                    vertical_spacing=0.03,
+                    subplot_titles=[key.replace("_", " ").title() for key in measurement_keys]
+                )
             
-            row = 1
-            for key in measurement_keys:
-                if measurements[key]:
-                    fig.add_trace(
-                        go.Scatter(
-                            x=timestamps, 
-                            y=measurements[key],
-                            mode="lines+markers",
-                            name=key
-                        ),
-                        row=row, col=1
-                    )
-                row += 1
+                row = 1
+                for key in measurement_keys:
+                    if measurements[key]:
+                        fig.add_trace(
+                            go.Scatter(
+                                x=timestamps, 
+                                y=measurements[key],
+                                mode="lines+markers",
+                                name=key
+                            ),
+                            row=row, col=1
+                        )
+                    row += 1
             
-            fig.update_layout(
-                height=250 * num_measurements,
-                title_text="Trend Analysis: Your Measurements"
-            )
+                fig.update_layout(
+                    height=250 * num_measurements,
+                    title_text="Trend Analysis: Your Measurements"
+                )
         
             
-            plot_html = pio.to_html(fig, full_html=False)
+                plot_html = pio.to_html(fig, full_html=False)
+            else:
+                plot_html = "<p>You haven't added your body information yet. Start Now!</p>"
         else:
-            plot_html = "<p>You haven't added your body information yet. Start Now!</p>"
+            plot_html = "<p>You haven't added your body information yet. Start Now!<p>"
             
-        return render_template("home.html", plot_html=plot_html)
+        return render_template("home.html", plot_html=plot_html, ai_feedback = ai_feedback)
+        
 
     @app.route("/measurements")
     @login_required
@@ -466,6 +537,61 @@ def create_app():
             errors.append("Invalid measurement value.")
 
         return errors
+    
+    @app.route("/edit_post/<post_id>", methods=["GET"])
+    @login_required
+    def edit_post(post_id):
+        """ Load the edit post page with the current post details. """
+        post = posts_collection.find_one({"_id": ObjectId(post_id)})
+
+        if not post:
+            flash("Post not found!", "danger")
+            return redirect(url_for("postlist"))
+
+        return render_template("edit_post.html", post=post)
+    
+    # Update in MongoDB
+    @app.route("/edit_post/<post_id>", methods=["POST"])
+    @login_required
+    def update_post(post_id):
+        content = request.form.get("content")
+        privacy = request.form.get("privacy")
+        tags = request.form.getlist("tag")  # Handle multiple tags
+
+        # Ensure the post exists
+        post = posts_collection.find_one({"_id": ObjectId(post_id)})
+
+        if not post:
+            flash("Post not found!", "danger")
+            return redirect(url_for("postlist"))
+
+        # Update post fields
+        update_fields = {
+            "content": content,
+            "privacy": privacy,
+            "tags": tags,
+            "updated_at": datetime.utcnow(),
+        }
+
+        posts_collection.update_one({"_id": ObjectId(post_id)}, {"$set": update_fields})
+        flash("Post updated successfully!", "success")
+
+        return redirect(url_for("postlist"))
+    
+    # Delete in MongoD
+    @app.route("/delete_post/<post_id>", methods=["POST"])
+    @login_required
+    def delete_post(post_id):
+        post = posts_collection.find_one({"_id": ObjectId(post_id)})
+
+        if not post:
+            flash("Post not found!", "danger")
+            return redirect(url_for("postlist"))
+
+        posts_collection.delete_one({"_id": ObjectId(post_id)})
+        flash("Post deleted successfully!", "success")
+
+        return redirect(url_for("postlist"))
 
 
     @app.route("/")
