@@ -10,6 +10,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.io as pio
 import openai 
+from openai import OpenAI
 
 load_dotenv(override=True)
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -43,6 +44,8 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = "login"
     
+    client = OpenAI() 
+        
     MONGO_URI = os.getenv("MONGO_URI")
     MONGO_DBNAME = os.getenv("MONGO_DBNAME")
 
@@ -160,7 +163,7 @@ def create_app():
         return render_template("accountsetting.html", user = user_data)
 
     # Generate AI-driven feedback for users' fitness progress
-    def generate_fitness_feedback(logs, user_goal):
+    def generate_fitness_feedback(logs, user_goal,client):
         if not logs or len(logs) < 2:
             return "You haven't recorded enough data yet. Keep tracking your progress!"
         
@@ -205,8 +208,8 @@ def create_app():
         """
 
         try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a fitness expert providing personalized advice."},
                     {"role": "user", "content": prompt}
@@ -227,7 +230,7 @@ def create_app():
         user_goal = user_data.get("goal", "lose-weight")  # Default to weight loss if goal is missing
 
         # Generate AI-based feedback
-        ai_feedback = generate_fitness_feedback(logs, user_goal)
+        ai_feedback = generate_fitness_feedback(logs, user_goal,client)
 
         if logs:
 
@@ -241,13 +244,14 @@ def create_app():
             ]
             
             measurements = {
-                key: [float(log[key]) for log in logs if key in log and log[key] is not None and isinstance(log[key], (int, float))]
+                key: [float(log[key]) for log in logs if key in log and log[key] is not None]
                 for key in measurement_keys
             }
             
             num_measurements = sum(1 for key in measurement_keys if measurements[key])
             
             if num_measurements > 0:
+                
                 fig = make_subplots(
                     rows=num_measurements, cols=1,
                     shared_xaxes=True,
