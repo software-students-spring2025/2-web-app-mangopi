@@ -293,18 +293,30 @@ def create_app():
     @app.route("/community")
     @login_required
     def community():
+        user_id = str(current_user.id)
+
+        # 查询所有帖子
         posts = list(posts_collection.find().sort("created_at", -1))
+
+        # 查询当前用户的好友信息
+        user_data = db.users.find_one({"_id": ObjectId(user_id)})
+        friend_nicknames = user_data.get("friend_nicknames", {})
 
         for post in posts:
             if isinstance(post.get("created_at"), str):
                 try:
                     post["created_at"] = datetime.datetime.fromisoformat(post["created_at"])
                 except ValueError:
-                    post["created_at"] = datetime.datetime.utcnow()  # 兜底
+                    post["created_at"] = datetime.datetime.utcnow()
 
             post["created_at"] = post["created_at"].strftime('%Y-%m-%d %H:%M')
 
+            # 使用好友昵称
+            if "user_id" in post:
+                post["username"] = friend_nicknames.get(post["user_id"], post.get("username", "Unknown"))
+
         return render_template("community.html", posts=posts)
+
     
     @app.route("/like_post/<post_id>", methods=["POST"])
     @login_required
@@ -345,39 +357,78 @@ def create_app():
         if request.method == "POST":
             friend_email = request.form.get("email")
             if not friend_email:
-                flash("Please enter a valid email", "danger")
-                return redirect(url_for("add_friend"))
+                return render_template("alert.html", message="Please enter a valid email", redirect_url="add_friend")
 
             friend = db.users.find_one({"email": friend_email})
             if not friend:
-                flash("User not found!", "danger")
-                return redirect(url_for("add_friend"))
+                return render_template("alert.html", message="User not found!", redirect_url="add_friend")
+            friend_id = str(friend["_id"])
+            user_id = str(current_user.id)
 
-            # 获取 friend ID
-            friend_id = friend["_id"]
-            user_id = ObjectId(current_user.id)
+            if db.users.find_one({"_id": ObjectId(user_id), "friends": friend_id}):
+                return render_template("alert.html", message="Friend already added!", redirect_url="add_friend")
 
-            # 检查是否已经是好友
-            if db.users.find_one({"_id": user_id, "friends": friend_id}):
-                flash("Friend already added!", "warning")
-                return redirect(url_for("community"))
-
-            # 添加好友
-            db.users.update_one(
-                {"_id": user_id},
-                {"$addToSet": {"friends": friend_id}}
-            )
-            flash("Friend added successfully!", "success")
-            return redirect(url_for("community"))
+            try:
+                db.users.update_one(
+                    {"_id": ObjectId(user_id)},
+                    {"$addToSet": {"friends": friend_id}}
+                )
+                return render_template("alert.html", message="Friend added successfully!", redirect_url="community")
+            except Exception as e:
+                return render_template("alert.html", message=f"Error occurred: {str(e)}", redirect_url="add_friend")
 
         return render_template("add_friend.html")
 
 
     
-    @app.route("/friendlist")
+    @app.route("/friendlist", methods=["GET", "POST"])
     @login_required
     def friendlist():
-        return render_template("friendlist.html")
+        user_id = str(current_user.id)
+
+        # 查询当前用户的好友列表
+        user_data = db.users.find_one({"_id": ObjectId(user_id)})
+        friends_list = []
+
+        if user_data and "friends" in user_data:
+            friends_list = list(db.users.find({"_id": {"$in": [ObjectId(fid) for fid in user_data["friends"]]}}))
+
+        # nicknames
+        friend_nicknames = user_data.get("friend_nicknames", {})
+
+        for friend in friends_list:
+            friend["_id"] = str(friend["_id"])
+            friend["nickname"] = friend_nicknames.get(friend["_id"], friend["name"])
+
+        return render_template("friendlist.html", friends=friends_list)
+
+    
+    @app.route("/delete_friend/<friend_id>", methods=["POST"])
+    @login_required
+    def delete_friend(friend_id):
+        user_id = str(current_user.id)
+
+        db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$pull": {"friends": friend_id}}
+        )
+
+        return jsonify({"message": "Friend deleted successfully!"})
+    
+    @app.route("/add_nickname/<friend_id>", methods=["POST"])
+    @login_required
+    def add_nickname(friend_id):
+        user_id = str(current_user.id)
+        data = request.get_json()
+        nickname = data.get("nickname", "")
+
+        db.users.update_one(
+            {"_id": ObjectId(user_id), "friends": friend_id},
+            {"$set": {f"friend_nicknames.{friend_id}": nickname}}
+        )
+
+        return jsonify({"message": "Nickname saved!"})
+
     
     @app.route("/search")
     @login_required
@@ -387,7 +438,28 @@ def create_app():
     @app.route("/postlist")
     @login_required
     def postlist():
-        return render_template("postlist.html")
+        user_posts = list(posts_collection.find({"user_id": str(current_user.id)}).sort("created_at", -1))
+
+        for post in user_posts:
+            post["_id"] = str(post["_id"])
+            if "created_at" in post and isinstance(post["created_at"], datetime.datetime):
+                post["created_at"] = post["created_at"].strftime('%Y-%m-%d %H:%M')
+
+        return render_template("postlist.html", posts=user_posts)
+
+    
+    @app.route("/delete_post/<post_id>", methods=["POST"])
+    @login_required
+    def delete_post(post_id):
+        post = posts_collection.find_one({"_id": ObjectId(post_id), "user_id": str(current_user.id)})
+
+        if not post:
+            return jsonify({"error": "Post not found or unauthorized"}), 403
+
+        posts_collection.delete_one({"_id": ObjectId(post_id)})
+        return jsonify({"message": "Post deleted successfully!"})
+
+
     
     @app.route("/add_post", methods=["GET", "POST"])
     @login_required
@@ -403,7 +475,7 @@ def create_app():
                 return redirect(url_for("add_post"))
 
             post = {
-                "user_id": ObjectId(current_user.id),
+                "user_id": str(current_user.id),
                 "username": current_user.name,
                 "content": content,
                 "visibility": privacy,
@@ -621,22 +693,6 @@ def create_app():
 
         return render_template("edit_post.html", post=post)
 
-
-    
-    # Delete in MongoDB
-    @app.route("/delete_post/<post_id>", methods=["POST"])
-    @login_required
-    def delete_post(post_id):
-        post = posts_collection.find_one({"_id": ObjectId(post_id)})
-
-        if not post:
-            flash("Post not found!", "danger")
-            return redirect(url_for("postlist"))
-
-        posts_collection.delete_one({"_id": ObjectId(post_id)})
-        flash("Post deleted successfully!", "success")
-
-        return redirect(url_for("postlist"))
 
     @app.route("/get_comments/<post_id>", methods=["GET"])
     @login_required

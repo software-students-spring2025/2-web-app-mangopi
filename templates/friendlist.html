@@ -31,16 +31,72 @@
             </div>
         </div>
 
-        <h1 id="listheader" class="page-header">Friend List</h1>
+        <h1 id="listheader" class="page-header">My Friends</h1>
+        
         <div id="listrecord">
-            <!-- Sample Record -->
-            <div class="post-record">
-                <div class="post-date1">User xxx (email@example.com)</div>
-                <div class="post-actions">
-                    <a href="#" class="post-action">delete</a>
+            {% for friend in friends %}
+            <div class="friend-record">
+                <div class="friend-info">
+                    <strong>{{ friend.nickname }}</strong> ({{ friend.email }})
                 </div>
+                <input type="text" class="nickname-input" placeholder="Add a note..." data-friend-id="{{ friend._id }}">
+                <button class="save-nickname" data-friend-id="{{ friend._id }}">Save</button>
+                <button class="delete-friend" data-friend-id="{{ friend._id }}">🗑️</button>
             </div>
+            {% endfor %}
         </div>
     </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 监听删除好友按钮
+        document.querySelectorAll(".delete-friend").forEach(button => {
+            button.addEventListener("click", function () {
+                const friendId = this.getAttribute("data-friend-id");
+
+                if (!confirm("Sure you want to delete this friend?")) return;
+
+                fetch(`/delete_friend/${friendId}`, {
+                    method: "POST",
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    this.closest(".friend-record").remove();
+                })
+                .catch(error => console.error("Error deleting friend:", error));
+            });
+        });
+
+        // 监听保存备注按钮
+        document.querySelectorAll(".save-nickname").forEach(button => {
+            button.addEventListener("click", function () {
+                const friendId = this.getAttribute("data-friend-id");
+                const nicknameInput = this.previousElementSibling;
+                const nickname = nicknameInput.value.trim();
+
+                fetch(`/add_nickname/${friendId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nickname: nickname })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    alert("Nickname updated!");
+                })
+                .catch(error => console.error("Error saving nickname:", error));
+            });
+        });
+    });
+    </script>
 </body>
 </html>
