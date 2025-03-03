@@ -229,15 +229,40 @@ def create_app():
 
         return render_template("community.html", posts=posts, friends=friends)
     
-    @app.route("/add_friend")
+    @app.route("/add_friend", methods=["GET", "POST"])
     @login_required
     def add_friend():
-        friend_id = request.form.get("friend_id")
-        if friend_id:
-            db.users.update_one({"_id": ObjectId(current_user.id)}, {"$addToSet": {"friends": ObjectId(friend_id)}})
-            flash("Friend added!", "success")
+        if request.method == "POST":
+            friend_email = request.form.get("email")
+            if not friend_email:
+                flash("Please enter a valid email", "danger")
+                return redirect(url_for("add_friend"))
+
+            friend = db.users.find_one({"email": friend_email})
+            if not friend:
+                flash("User not found!", "danger")
+                return redirect(url_for("add_friend"))
+
+            # 获取 friend ID
+            friend_id = friend["_id"]
+            user_id = ObjectId(current_user.id)
+
+            # 检查是否已经是好友
+            if db.users.find_one({"_id": user_id, "friends": friend_id}):
+                flash("Friend already added!", "warning")
+                return redirect(url_for("community"))
+
+            # 添加好友
+            db.users.update_one(
+                {"_id": user_id},
+                {"$addToSet": {"friends": friend_id}}
+            )
+            flash("Friend added successfully!", "success")
             return redirect(url_for("community"))
+
         return render_template("add_friend.html")
+
+
     
     @app.route("/friendlist")
     @login_required
@@ -441,6 +466,7 @@ def create_app():
             errors.append("Invalid measurement value.")
 
         return errors
+
 
     @app.route("/")
     def index():
