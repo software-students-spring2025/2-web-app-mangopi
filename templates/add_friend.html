@@ -32,8 +32,8 @@
     <h1 id="addfriendheader" class="page-header">Add Friend</h1>
     <form action="{{ url_for('add_friend') }}" method="POST" class="profile-form">
       <input id="addfriendinput" type="text" name="email" class="input-field" placeholder="Email" required autocomplete="off">
-      <div class="button"><a href=""><span class="button-text">Add</span></a></div>
-    </form>
+      <button type="submit" class="button"><span class="button-text">Add</span></button>
+    </form>    
   </div>
 </body>
 </html>
