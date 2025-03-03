@@ -1,6 +1,6 @@
 import os
 import datetime
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -290,15 +290,54 @@ def create_app():
         logs = logs_collection.find({"user_id": current_user.id}).sort("created_at", -1)
         return render_template("measurements.html", logs=logs)
     
-    
     @app.route("/community")
     @login_required
     def community():
-        # Get latest posts
-        posts = db.posts.find().sort("created_at", -1)  
-        friends = db.users.find({"_id": {"$ne": ObjectId(current_user.id)}})  
+        posts = list(posts_collection.find().sort("created_at", -1))
 
-        return render_template("community.html", posts=posts, friends=friends)
+        for post in posts:
+            if isinstance(post.get("created_at"), str):
+                try:
+                    post["created_at"] = datetime.datetime.fromisoformat(post["created_at"])
+                except ValueError:
+                    post["created_at"] = datetime.datetime.utcnow()  # 兜底
+
+            post["created_at"] = post["created_at"].strftime('%Y-%m-%d %H:%M')
+
+        return render_template("community.html", posts=posts)
+    
+    @app.route("/like_post/<post_id>", methods=["POST"])
+    @login_required
+    def like_post(post_id):
+        post = posts_collection.find_one({"_id": ObjectId(post_id)})
+
+        if not post:
+            return jsonify({"error": "Post not found"}), 404
+
+        # 读取当前点赞数，如果没有，则初始化
+        current_likes = post.get("likes", 0)
+        user_id = str(current_user.id)
+
+        # 如果帖子已经有 likes_users 记录，检查用户是否已经点赞
+        if "likes_users" not in post:
+            post["likes_users"] = []
+
+        if user_id in post["likes_users"]:
+            post["likes_users"].remove(user_id)
+            new_likes = max(0, current_likes - 1)
+        else:
+            post["likes_users"].append(user_id)
+            new_likes = current_likes + 1
+
+        posts_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$set": {"likes": new_likes, "likes_users": post["likes_users"]}}
+        )
+
+        return jsonify({"likes": new_likes, "liked": user_id in post["likes_users"]})
+
+
+
     
     @app.route("/add_friend", methods=["GET", "POST"])
     @login_required
@@ -350,21 +389,36 @@ def create_app():
     def postlist():
         return render_template("postlist.html")
     
-    @app.route("/edit_post")
-    @login_required
-    def edit_post():
-        return render_template("edit_post.html")
-    
-    @app.route("/add_post")
+    @app.route("/add_post", methods=["GET", "POST"])
     @login_required
     def add_post():
-        content = request.form.get("content")
-        if content:
-            post = {"user_id": current_user.id, "content": content, "created_at": datetime.datetime.utcnow()}
-            db.posts.insert_one(post)
-            flash("Post added!", "success")
+        if request.method == "POST":
+            content = request.form.get("content")
+            privacy = request.form.get("privacy")
+            tags = request.form.getlist("tag")
+
+            # 确保内容和可见性
+            if not content or not privacy:
+                flash("Post content and visibility are required!", "danger")
+                return redirect(url_for("add_post"))
+
+            post = {
+                "user_id": ObjectId(current_user.id),
+                "username": current_user.name,
+                "content": content,
+                "visibility": privacy,
+                "tags": tags,
+                "created_at": datetime.datetime.utcnow()
+            }
+
+            # 插入数据库
+            posts_collection.insert_one(post)
+
+            flash("Post added successfully!", "success")
             return redirect(url_for("community"))
+
         return render_template("add_post.html")
+
 
     @app.route("/profile", methods=["GET", "POST"])
     @login_required
@@ -538,47 +592,38 @@ def create_app():
 
         return errors
     
-    @app.route("/edit_post/<post_id>", methods=["GET"])
+    @app.route("/edit_post/<post_id>", methods=["GET", "POST"])
     @login_required
     def edit_post(post_id):
-        """ Load the edit post page with the current post details. """
+        """ Load or update the edit post page with the current post details. """
         post = posts_collection.find_one({"_id": ObjectId(post_id)})
 
         if not post:
             flash("Post not found!", "danger")
+            return redirect(url_for("postlist"))
+
+        if request.method == "POST":
+            content = request.form.get("content")
+            privacy = request.form.get("privacy")
+            tags = request.form.getlist("tag")  # Handle multiple tags
+
+            # Update post fields
+            update_fields = {
+                "content": content,
+                "privacy": privacy,
+                "tags": tags,
+                "updated_at": datetime.utcnow(),
+            }
+
+            posts_collection.update_one({"_id": ObjectId(post_id)}, {"$set": update_fields})
+            flash("Post updated successfully!", "success")
             return redirect(url_for("postlist"))
 
         return render_template("edit_post.html", post=post)
+
+
     
-    # Update in MongoDB
-    @app.route("/edit_post/<post_id>", methods=["POST"])
-    @login_required
-    def update_post(post_id):
-        content = request.form.get("content")
-        privacy = request.form.get("privacy")
-        tags = request.form.getlist("tag")  # Handle multiple tags
-
-        # Ensure the post exists
-        post = posts_collection.find_one({"_id": ObjectId(post_id)})
-
-        if not post:
-            flash("Post not found!", "danger")
-            return redirect(url_for("postlist"))
-
-        # Update post fields
-        update_fields = {
-            "content": content,
-            "privacy": privacy,
-            "tags": tags,
-            "updated_at": datetime.utcnow(),
-        }
-
-        posts_collection.update_one({"_id": ObjectId(post_id)}, {"$set": update_fields})
-        flash("Post updated successfully!", "success")
-
-        return redirect(url_for("postlist"))
-    
-    # Delete in MongoD
+    # Delete in MongoDB
     @app.route("/delete_post/<post_id>", methods=["POST"])
     @login_required
     def delete_post(post_id):

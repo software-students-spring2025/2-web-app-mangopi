@@ -536,3 +536,20 @@ a:hover {
 #listrecord{
     padding-bottom: 200px;
 }
+
+.like-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.like-button[data-liked="true"] {
+    color: pink;
+}
+
+.like-button[data-liked="false"] {
+    color: gray;
+}
+

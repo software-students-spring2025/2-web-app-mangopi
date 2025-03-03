@@ -45,24 +45,31 @@
       </div>
     </div>
     
-    <!-- Post Feed - All posts contained here -->
+    <!-- Post Feed - Show All Posts -->
     <div id="post-feed">
-      <!-- Sample Post -->
-      <div class="post-container">
-        <div class="post-header">
-          <div class="post-user">Jane Doe</div>
-          <div class="post-visibility">(Friends)</div>
+      {% for post in posts %}
+        <div class="post-container">
+          <div class="post-header">
+            <div class="post-user">{{ post.username }}</div>
+            <div class="post-visibility">({{ post.visibility }})</div>
+          </div>
+          <div class="post-date">{{ post.created_at }}</div>
+          <div class="post-content">
+            {{ post.content }}
+          </div>
+          <div class="post-tags">
+            Tags: {{ ", ".join(post.tags) if post.tags else "No tags" }}
+          </div>
+          <div class="post-actions">
+            <button class="like-button" data-post-id="{{ post._id }}" data-liked="false">
+                ❤️ <span class="like-count">{{ post.likes or 0 }}</span>
+            </button>
         </div>
-        <div class="post-date">Yesterday</div>
-        <div class="post-content">
-          Just completed my daily workout routine! Made good progress on my fitness goals this week. Feeling energized and motivated to keep going.
+        
         </div>
-        <div class="post-actions">
-          <button class="post-action-button">Like</button>
-          <button class="post-action-button">Comment</button>
-        </div>
-      </div>
+      {% endfor %}
     </div>
+
   </div>
 
   <script>
@@ -70,6 +77,39 @@
     window.onload = function() {
       window.scrollTo(0, 0);
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".like-button").forEach(button => {
+          button.addEventListener("click", function () {
+              const postId = this.getAttribute("data-post-id");
+              const isLiked = this.getAttribute("data-liked") === "true";
+
+              fetch(`/like_post/${postId}`, {
+                  method: "POST",
+                  headers: { "X-Requested-With": "XMLHttpRequest" }
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.error) {
+                      alert(data.error);
+                      return;
+                  }
+
+                  // 更新按钮状态
+                  this.querySelector(".like-count").textContent = data.likes;
+                  this.setAttribute("data-liked", data.liked);
+
+                  // 切换颜色
+                  if (data.liked) {
+                      this.style.color = "pink";
+                  } else {
+                      this.style.color = "gray";
+                  }
+              })
+              .catch(error => console.error("Error:", error));
+          });
+      });
+    });
   </script>
 </body>
 </html>
