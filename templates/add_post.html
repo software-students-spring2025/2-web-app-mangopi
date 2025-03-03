@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Post</title>
+  <!-- Use url_for to load the CSS file from the static folder -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+        <button class="goback-button"><a href="{{ url_for('community') }}" style="text-decoration: underline;">Back</a></button>
+        <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
+    </div>
+
+  <!-- Navigation Menu -->
+    <div class="nav-menu">
+        <div class="menu-button">
+            <span class="menu-text"> <a href="{{ url_for('home') }}">Home</a></span>
+        </div>
+        <div class="menu-button">
+            <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
+        </div>
+        <div class="menu-button active">
+            <span class="menu-text active"><a href="{{ url_for('community') }}">Community</a></span>
+        </div>
+        <div class="menu-button">
+            <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
+        </div>
+    </div>
+    <h1 class="page-header">Add Post</h1>
+    <form action="{{ url_for('add_post') }}" method="POST" class="profile-form">
+      <textarea id="postcontent" name="content" class="input-field" placeholder="Write your post here..." required autocomplete="off"></textarea>
+      
+      <div class="form-group">
+        <div id="privacy-settings">
+          <p>Who can see?</p>
+          <div id="privacy-checkbox-group">
+            <label><input type="radio" name="privacy" value="private"> Private</label>
+            <label><input type="radio" name="privacy" value="friends"> Friend ONLY</label>
+            <label><input type="radio" name="privacy" value="public"> Public</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div id="tag-settings">
+          <p>Tag #</p>
+          <div id="tag-checkbox-group">
+            <label><input type="checkbox" name="tag" value="lose_weight"> Lose Weight</label>
+            <label><input type="checkbox" name="tag" value="gain_muscle"> Gain Muscle</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="button"><a href=""><span class="button-text">Post</span></a></div>
+    </form>
+  </div>
+</body>
+</html>

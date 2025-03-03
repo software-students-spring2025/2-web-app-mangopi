@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Log</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <button class="goback-button"><a href="{{ url_for('measurements') }}" style="text-decoration: underline;">Back</a></button>
+      <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="nav-menu">
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('home') }}">Home</a></span>
+      </div>
+      <div class="menu-button active">
+        <span class="menu-text active"><a href="{{ url_for('measurements') }}">Measurements</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('community') }}">Community</a></span>
+      </div>
+      <div class="menu-button">
+        <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
+      </div>
+    </div>
+    
+    <h1 class="page-header">Add Log</h1>
+
+    <!-- Date display: dynamically updated -->
+    <div class="date-display">
+      <span class="date-label">Date</span>
+      <span id="current-date"></span>
+    </div>
+
+    <!-- Body Weight & Body Fat Form -->
+    <form action="{{ url_for('add_log') }}" method="POST" class="profile-form">
+      <div class="measurements-header">Measurements</div>
+      
+      <!-- Body Weight -->
+      <div class="measurement-row">
+        <label for="body_weight" class="measurement-label">Body Weight</label>
+        <div class="input-container">
+          <input type="text" id="body_weight" name="body_weight" class="measurement-input" placeholder="KG" required autocomplete="off">
+          <div id="body_weight-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Body Fat -->
+      <div class="measurement-row">
+        <label for="body_fat" class="measurement-label">Body Fat</label>
+        <div class="input-container">
+          <input type="text" id="body_fat" name="body_fat" class="measurement-input" placeholder="%" required autocomplete="off">
+          <div id="body_fat-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Waist -->
+      <div class="measurement-row">
+        <label for="waist" class="measurement-label">Waist</label>
+        <div class="input-container">
+          <input type="text" id="waist" name="waist" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="waist-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Shoulder -->
+      <div class="measurement-row">
+        <label for="shoulder" class="measurement-label">Shoulder</label>
+        <div class="input-container">
+          <input type="text" id="shoulder" name="shoulder" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="shoulder-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Chest -->
+      <div class="measurement-row">
+        <label for="chest" class="measurement-label">Chest</label>
+        <div class="input-container">
+          <input type="text" id="chest" name="chest" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="chest-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Abdomen -->
+      <div class="measurement-row">
+        <label for="abdomen" class="measurement-label">Abdomen</label>
+        <div class="input-container">
+          <input type="text" id="abdomen" name="abdomen" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="abdomen-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Hip -->
+      <div class="measurement-row">
+        <label for="hip" class="measurement-label">Hip</label>
+        <div class="input-container">
+          <input type="text" id="hip" name="hip" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="hip-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Left Thigh -->
+      <div class="measurement-row">
+        <label for="left_thigh" class="measurement-label">Left Thigh</label>
+        <div class="input-container">
+          <input type="text" id="left_thigh" name="left_thigh" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="left_thigh-error" class="error-message"></div>
+        </div>
+      </div>
+      
+      <!-- Right Thigh -->
+      <div class="measurement-row">
+        <label for="right_thigh" class="measurement-label">Right Thigh</label>
+        <div class="input-container">
+          <input type="text" id="right_thigh" name="right_thigh" class="measurement-input" placeholder="CM" required autocomplete="off">
+          <div id="right_thigh-error" class="error-message"></div>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <button type="submit" id="saveButton" class="save-button" disabled>Save</button>
+    </form>
+  </div>
+
+  <!-- Input Validation & Live Date Update -->
+  <script>
+
+    function updateDate() {
+      const now = new Date();
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      const formattedDate = now.toLocaleDateString(undefined, options);
+      document.getElementById("current-date").textContent = formattedDate;
+    }
+    updateDate();
+    setInterval(updateDate, 60000);
+
+    const fields = {
+      "body_weight": { min: 30, max: 500 },
+      "body_fat": { min: 5, max: 60 },
+      "waist": { min: 30, max: 200 },
+      "shoulder": { min: 25, max: 70 }, 
+      "chest": { min: 30, max: 200 },
+      "abdomen": { min: 30, max: 200 },
+      "hip": { min: 30, max: 200 },
+      "left_thigh": { min: 30, max: 200 },
+      "right_thigh": { min: 30, max: 200 }
+    };
+    
+    function validateForm() {
+      let isValid = true;
+      
+      for (let field in fields) {
+        const input = document.getElementById(field);
+        const error = document.getElementById(field + "-error");
+        
+        if (!input || !error) continue;
+        
+        let value = parseFloat(input.value);
+        
+        if (isNaN(value) || value < fields[field].min || value > fields[field].max) {
+          error.textContent = `Value must be between ${fields[field].min} and ${fields[field].max}`;
+          isValid = false;
+        } else {
+          error.textContent = "";
+        }
+      }
+      
+      const saveButton = document.getElementById("saveButton");
+      if (saveButton) {
+        saveButton.disabled = !isValid;
+      }
+    }
+    
+    // Add event listeners to all inputs
+    document.addEventListener("DOMContentLoaded", function() {
+      for (let field in fields) {
+        const input = document.getElementById(field);
+        if (input) {
+          input.addEventListener("input", validateForm);
+        }
+      }
+      
+      validateForm();
+    });
+  </script>
+</body>
+</html>

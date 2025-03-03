@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Setting</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='loginstyles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Account Setting</h1>
+        
+        <form method="POST" action="{{ url_for('accountsetting') }}">
+            <div class="form-group gender-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" class="form-control">
+                    <option value="" selected disabled>Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                </select>
+            </div>
+
+            <div class="form-group dob-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="dob" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <h3 class="section-title">Goal</h3>
+                
+                <div class="radio-group">
+                    <input class="form-control-inline" type="radio" id="lose-weight" name="goal" value="lose-weight">
+                    <label for="lose-weight">Lose Weight</label>
+                </div>
+                
+                <div class="radio-group">
+                    <input class="form-control-inline" type="radio" id="better-shape" name="goal" value="gain-muscle">
+                    <label for="better-shape">Gain Muscle</label>
+                </div>
+            </div>
+            <button type="submit" class="save-button">Save</button>
+        </form>
+    </div>
+</body>
+</html>

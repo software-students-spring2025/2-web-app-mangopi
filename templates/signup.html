@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='loginstyles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Sign Up</h1>
+        <form method="POST" action="{{ url_for('signup') }}">
+            <input type="text" name="name" placeholder="Name" required autocomplete="off"/>
+            <input type="text" name="email" placeholder="Email" required autocomplete="off"/>
+            <input type="password" name="password" placeholder="Password" required autocomplete="off"/>
+            <button type="submit">Sign Up</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="error-message">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="signup-prompt">
+            Already Have an Account? <a href="{{ url_for('login') }}">Login</a>
+        </div>
+    </div>
+</body>
+</html>
