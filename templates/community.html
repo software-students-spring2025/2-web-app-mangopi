@@ -61,10 +61,17 @@
             Tags: {{ ", ".join(post.tags) if post.tags else "No tags" }}
           </div>
           <div class="post-actions">
-            <button class="like-button" data-post-id="{{ post._id }}" data-liked="false">
-                ❤️ <span class="like-count">{{ post.likes or 0 }}</span>
-            </button>
-        </div>
+              <button class="like-button" data-post-id="{{ post._id }}" data-liked="false">
+                  ❤️ <span class="like-count">{{ post.likes or 0 }}</span>
+              </button>              
+              <button class="comment-button" data-post-id="{{ post._id }}">💬 Comment</button>
+          </div>
+              <div class="comments-container" id="comments-{{ post._id }}" style="display: none;">
+              <div class="comments-list"></div>
+              <input type="text" class="comment-input" placeholder="Write down your comment..." />
+              <button class="submit-comment" data-post-id="{{ post._id }}">Post</button>
+          </div>
+        
         
         </div>
       {% endfor %}
@@ -79,37 +86,109 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".like-button").forEach(button => {
-          button.addEventListener("click", function () {
-              const postId = this.getAttribute("data-post-id");
-              const isLiked = this.getAttribute("data-liked") === "true";
+        document.querySelectorAll(".like-button").forEach(button => {
+            button.addEventListener("click", function () {
+                const postId = this.getAttribute("data-post-id");
+                const isLiked = this.getAttribute("data-liked") === "true";
 
-              fetch(`/like_post/${postId}`, {
-                  method: "POST",
-                  headers: { "X-Requested-With": "XMLHttpRequest" }
-              })
-              .then(response => response.json())
-              .then(data => {
-                  if (data.error) {
-                      alert(data.error);
-                      return;
-                  }
+                fetch(`/like_post/${postId}`, {
+                    method: "POST",
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
 
-                  // 更新按钮状态
-                  this.querySelector(".like-count").textContent = data.likes;
-                  this.setAttribute("data-liked", data.liked);
+                    this.querySelector(".like-count").textContent = data.likes;
+                    this.setAttribute("data-liked", data.liked);
 
-                  // 切换颜色
-                  if (data.liked) {
-                      this.style.color = "pink";
-                  } else {
-                      this.style.color = "gray";
-                  }
-              })
-              .catch(error => console.error("Error:", error));
-          });
-      });
+                    if (data.liked) {
+                        this.style.color = "pink";
+                    } else {
+                        this.style.color = "gray";
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+
+        // 显示/隐藏评论
+        document.querySelectorAll(".comment-button").forEach(button => {
+            button.addEventListener("click", function () {
+                const postId = this.getAttribute("data-post-id");
+                const commentContainer = document.getElementById(`comments-${postId}`);
+
+                if (commentContainer.style.display === "none") {
+                    commentContainer.style.display = "block";
+                    loadComments(postId);
+                } else {
+                    commentContainer.style.display = "none";
+                }
+            });
+        });
+
+        // 加载评论
+        function loadComments(postId) {
+            fetch(`/get_comments/${postId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const commentContainer = document.getElementById(`comments-${postId}`).querySelector(".comments-list");
+                    commentContainer.innerHTML = "";
+
+                    if (data.comments.length === 0) {
+                        commentContainer.innerHTML = "<p>Leave First Comment Here!</p>";
+                    } else {
+                        data.comments.forEach(comment => {
+                            const commentItem = document.createElement("div");
+                            commentItem.classList.add("comment-item");
+                            commentItem.innerHTML = `<strong>${comment.username}</strong>: ${comment.text} <span class="comment-time">${comment.created_at}</span>`;
+                            commentContainer.appendChild(commentItem);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error loading comments:", error));
+        }
+
+        // 发表评论
+        document.querySelectorAll(".submit-comment").forEach(button => {
+            button.addEventListener("click", function () {
+                const postId = this.getAttribute("data-post-id");
+                const commentInput = this.previousElementSibling;
+
+                const commentText = commentInput.value.trim();
+                if (!commentText) {
+                    alert("Can't be empty！");
+                    return;
+                }
+
+                fetch(`/add_comment/${postId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ comment: commentText })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    const commentContainer = document.getElementById(`comments-${postId}`).querySelector(".comments-list");
+                    const commentItem = document.createElement("div");
+                    commentItem.classList.add("comment-item");
+                    commentItem.innerHTML = `<strong>${data.comment.username}</strong>: ${data.comment.text} <span class="comment-time">${data.comment.created_at}</span>`;
+                    commentContainer.appendChild(commentItem);
+
+                    commentInput.value = "";
+                })
+                .catch(error => console.error("Error posting comment:", error));
+            });
+        });
+
     });
-  </script>
+</script>
+
 </body>
 </html>

@@ -638,12 +638,54 @@ def create_app():
 
         return redirect(url_for("postlist"))
 
+    @app.route("/get_comments/<post_id>", methods=["GET"])
+    @login_required
+    def get_comments(post_id):
+        post = posts_collection.find_one({"_id": ObjectId(post_id)})
+
+        if not post:
+            return jsonify({"error": "Post not found"}), 404
+
+        comments = post.get("comments", [])
+
+        return jsonify({"comments": comments})
+    
+    @app.route("/add_comment/<post_id>", methods=["POST"])
+    @login_required
+    def add_comment(post_id):
+        post = posts_collection.find_one({"_id": ObjectId(post_id)})
+
+        if not post:
+            return jsonify({"error": "Post not found"}), 404
+
+        comment_text = request.json.get("comment", "").strip()
+
+        if not comment_text:
+            return jsonify({"error": "Comment cannot be empty"}), 400
+
+        new_comment = {
+            "user_id": str(current_user.id),
+            "username": current_user.name,
+            "text": comment_text,
+            "created_at": datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M')
+        }
+
+        posts_collection.update_one(
+            {"_id": ObjectId(post_id)},
+            {"$push": {"comments": new_comment}}
+        )
+
+        return jsonify({"message": "Comment added successfully!", "comment": new_comment})
+
+    
+
 
     @app.route("/")
     def index():
         return redirect(url_for("login"))
 
     return app
+
 
 if __name__ == "__main__":
     app = create_app()
