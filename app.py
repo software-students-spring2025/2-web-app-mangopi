@@ -306,7 +306,7 @@ def create_app():
         uid = get_current_user_id()
         logs = list(logs_collection.find({"user_id": uid}).sort("created_at", -1))
         for log in logs:
-            if isinstance(log.get("created_at"), str):  # Check if it's a string
+            if isinstance(log.get("created_at"), str): 
                 try:
                     log["created_at"] = parse(log["created_at"])
                 except ValueError:
