@@ -31,6 +31,8 @@ _Muscle Growth-Specific Features_
    cd 2-web-app-mangopi
 
 2. **Set a Virtual Environment**
+
+
     Create and activate a Conda environment, then install dependencies:
 
     ```bash
@@ -39,6 +41,8 @@ _Muscle Growth-Specific Features_
     pip install -r requirements.txt
 
 3. **Configure Environment Variables**
+
+
 Create a .env file in the project root and add the following (adjust values as needed):
     ```bash
     SECRET_KEY=your-secret-key
@@ -48,10 +52,12 @@ Create a .env file in the project root and add the following (adjust values as n
     FLASK_PORT=5001   
 
 4. **Run the client**
+
 To run the application in normal mode (using the logged-in user’s data):
 
     ```bash
     python app.py
+    ```bash
 
 To run the application in DEMO mode (forcing a fixed user id, e.g. “12345”, for testing):
 
