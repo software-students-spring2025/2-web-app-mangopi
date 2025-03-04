@@ -42,8 +42,7 @@ _Muscle Growth-Specific Features_
 
 3. **Configure Environment Variables**
 
-
-Create a .env file in the project root and add the following (adjust values as needed):
+    Create a .env file in the project root and add the following (adjust values as needed):
 
     ```bash
     SECRET_KEY=your-secret-key
@@ -61,6 +60,7 @@ Create a .env file in the project root and add the following (adjust values as n
 
     To run the application in DEMO mode (forcing a fixed user id, e.g. “12345”, for testing):
 
+    ```bash
     python app.py --demo_mode
 
 
