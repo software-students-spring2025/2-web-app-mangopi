@@ -63,7 +63,9 @@ _Muscle Growth-Specific Features_
 
     ```bash
     python app.py --demo_mode
-
+    ```
+    
+If you have any questions or need access to our database, please contact zz4330@nyu.edu.
 
 ## Task boards
 
