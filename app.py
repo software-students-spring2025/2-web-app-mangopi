@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from dateutil.parser import parse 
 import pymongo
 from bson.objectid import ObjectId
 from plotly.subplots import make_subplots
@@ -302,7 +303,14 @@ def create_app():
     @app.route("/measurements")
     @login_required
     def measurements():
-        logs = list(logs_collection.find({"user_id": current_user.id}).sort("created_at", -1))
+        uid = get_current_user_id()
+        logs = list(logs_collection.find({"user_id": uid}).sort("created_at", -1))
+        for log in logs:
+            if isinstance(log.get("created_at"), str):  # Check if it's a string
+                try:
+                    log["created_at"] = parse(log["created_at"])
+                except ValueError:
+                    log["created_at"] = datetime.utcnow() 
         return render_template("measurements.html", logs=logs)
     
     @app.route("/community")
