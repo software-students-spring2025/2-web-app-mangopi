@@ -4,7 +4,7 @@ A little exercise to build a web application following an agile development proc
 
 ## Product vision statement
 
-Our Weight Tracker & Body Dimension App helps fitness people track their journey to healthier body shapes by recording and analyzing body measurements over time with seamless logging, data visualization, and personalized insights, ensuring an intuitive and effective experience with database-driven tracking and management.
+Our Weight Tracker & Body Dimension App helps fitness people track their journey to healthier body shapes by recording and analyzing body measurements over time with seamless logging, data visualization for tracking, and personalized AI insights, ensuring an intuitive and effective experience with database-driven tracking and management.
 ## User stories
 [Issue Page](https://github.com/software-students-spring2025/2-web-app-mangopi/issues)
 1. **User Authentication**: As a fitness person, I want to securely log in and access my account, so that I can track my progress, interact with the community, and manage my data.
