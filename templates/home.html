@@ -39,11 +39,13 @@
       <div id="trend-plot">
         {{ plot_html|safe }}
       </div>
-      <button class="reset-button" onclick="resetTrend()">Reset Trend</button>
+      <div class="button">
+        <a href="#" onclick="resetTrend()"><span class="button-text">Reset Trend</span></a>
+      </div>
     </div>
 
     <!-- AI Fitness Feedback Section -->
-    <div class="feedback-section">
+    <div class="feedback-section" style="margin-top: 40px;">
       <h2>AI Fitness Feedback</h2>
       <div class="feedback-box">
         <p>{{ ai_feedback }}</p>
@@ -56,5 +58,6 @@
       location.reload();
     }
   </script>
+
 </body>
 </html>

@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search</title>
-  <!-- Use url_for to load the CSS file from the static folder -->
+  <title>Search Posts</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
 </head>
 <body>
@@ -14,7 +13,7 @@
         <button class="logout-button"><a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a></button>
     </div>
 
-  <!-- Navigation Menu -->
+    <!-- Navigation Menu -->
     <div class="nav-menu">
         <div class="menu-button">
             <span class="menu-text"> <a href="{{ url_for('home') }}">Home</a></span>
@@ -29,33 +28,34 @@
             <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
         </div>
     </div>
-    <h1 id="addfriendheader" class="page-header">Search</h1>
-    <form action="{{ url_for('add_friend') }}" method="POST" class="profile-form">
-      <div id="search-container">
-        <input id="addfriendinput" type="text" name="email" class="input-field" placeholder="Enter Keyword" required autocomplete="off">
-        <button type="submit" id="search-button">
-          <span class="button-text">Search</span>
-        </button>
-      </div>
+
+    <h1 class="page-header">Search Posts</h1>
+
+    <!-- Search Form -->
+    <form action="{{ url_for('search') }}" method="POST" class="search-form">
+        <input type="text" name="query" class="input-field" placeholder="Enter keyword to search posts..." required autocomplete="off">
+        <button type="submit" class="search-button">🔍</button>
     </form>
-    <div id="post-feed">
-      <!-- Sample Post -->
-      <div class="post-container">
-        <div class="post-header">
-          <div class="post-user">Jane Doe</div>
-          <div class="post-visibility">(Friends)</div>
-        </div>
-        <div class="post-date">Yesterday</div>
-        <div class="post-content">
-          Just completed my daily workout routine! Made good progress on my fitness goals this week. Feeling energized and motivated to keep going.
-        </div>
-        <div class="post-actions">
-          <button class="post-action-button">Like</button>
-          <button class="post-action-button">Comment</button>
-        </div>
-      </div>
+
+    <!-- Search Results -->
+    <div id="search-results">
+        {% if posts %}
+            <h2>Results for "{{ query }}"</h2>
+            {% for post in posts %}
+                <div class="post-container">
+                    <div class="post-header">
+                        <div class="post-user">{{ post.username }}</div>
+                        <div class="post-date">{{ post.created_at }}</div>
+                    </div>
+                    <div class="post-content">
+                        {{ post.content }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% elif query %}
+            <p>No results found for "{{ query }}".</p>
+        {% endif %}
     </div>
-  </div>
   </div>
 </body>
 </html>

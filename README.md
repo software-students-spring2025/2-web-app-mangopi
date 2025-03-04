@@ -24,7 +24,48 @@ _Muscle Growth-Specific Features_
 
 ## Steps necessary to run the software
 
-See instructions. Delete this line and place instructions to download, configure, and run the software here.
+1. **Clone the Repository**  
+
+   ```bash
+   git clone https://github.com/software-students-spring2025/2-web-app-mangopi.git
+   cd 2-web-app-mangopi
+
+2. **Set a Virtual Environment**
+
+
+    Create and activate a Conda environment, then install dependencies:
+
+    ```bash
+    conda create -n mangopi_env python=3.12
+    conda activate mangopi_env
+    pip install -r requirements.txt
+
+3. **Configure Environment Variables**
+
+    Create a .env file in the project root and add the following (adjust values as needed):
+
+    ```bash
+    SECRET_KEY=your-secret-key
+    MONGO_URI=your-mongodb-connection-string
+    MONGO_DBNAME=your-database-name
+    OPENAI_API_KEY=your-openai-api-key
+    FLASK_PORT=5001   
+
+4. **Run the client**
+
+    To run the application in normal mode (using the logged-in user’s data):
+
+    ```bash
+    python app.py
+    ```
+    
+    To run the application in DEMO mode (forcing a fixed user id, e.g. “12345”, for testing):
+
+    ```bash
+    python app.py --demo_mode
+    ```
+    
+If you have any questions or need access to our database, please contact zz4330@nyu.edu.
 
 ## Task boards
 
