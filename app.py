@@ -576,7 +576,7 @@ def create_app():
             flash("Log added.", "success")
             
             # Show form again with edit button
-            return render_template("add_log.html", last_log_id=last_log_id)
+            return redirect(url_for("measurements"))
         
         return render_template("add_log.html")
     

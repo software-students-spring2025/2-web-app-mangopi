@@ -35,6 +35,7 @@
         <a href="{{ url_for('add_log') }}"><span class="button-text">+ Log</span></a>
     </div>
 
+    <h2 id="history">History</h2>
     <div id="log-container">
       {% if logs %}
         <table id="log-table">
@@ -79,7 +80,7 @@
           </tbody>
         </table>
       {% else %}
-        <p id="no-logs-message">No measurement logs found. <a href="{{ url_for('add_log') }}">Add your first log!</a></p>
+        <p id="no-logs-message">No measurement logs found. <br><a href="{{ url_for('add_log') }}" style="text-decoration: underline;">Add your first log!</a></p>
       {% endif %}
     </div>
   </div>

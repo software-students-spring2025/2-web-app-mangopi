@@ -70,3 +70,9 @@ If you have any questions or need access to our database, please contact zz4330@
 [Sprint 1](https://github.com/orgs/software-students-spring2025/projects/18): We focused on familiarizing ourselves with MongoDB and Flask. Together, we worked on the login/signup page and the add_log page (user story #1 and #4) to ensure everything was functioning properly.
 
 [Sprint 2](https://github.com/orgs/software-students-spring2025/projects/103): We divided tasks based on functionality, with each team member working on a specific feature. We also introduced a new user story (#3) at this stage to enhance the user experience.
+
+## Wireframes
+[Figma link](https://www.figma.com/design/dU1VURpoqFCAoaFis3S6kL/mangopi?node-id=0-1&t=Xblr9685IqmDrrvM-1)
+
+<img src="images/wireframe.png" width=800>
+

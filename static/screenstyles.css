@@ -866,7 +866,7 @@ a:hover {
 #log-container {
   width: 100%;
   overflow-x: auto;
-  margin-top: 30px;
+  margin-top: 15px;
   margin-bottom: 40px;
 }
 
@@ -1020,4 +1020,8 @@ a:hover {
     line-height: 1.5;
     font-size: 16px;
     color: #333;
+}
+
+#history {
+    margin-top: 25px;
 }
