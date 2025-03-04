@@ -10,6 +10,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.io as pio
 import openai 
+import argparse
 from openai import OpenAI
 
 load_dotenv(override=True)
@@ -64,6 +65,14 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.get(user_id, db)
+
+    def get_current_user_id():
+        # In demo mode, use fixed string "12345"
+        return "12345" if DEMO_MODE else current_user.id
+
+    def get_current_user_obj_id():
+        # For queries that require an ObjectId.
+        return "12345" if DEMO_MODE else ObjectId(current_user.id)
     
     @app.route("/login", methods=["GET", "POST"])
     def login():
@@ -225,10 +234,11 @@ def create_app():
     @login_required
     def home():
         # Query logs for the current user sorted in ascending order by creation time.
-        logs = list(logs_collection.find({"user_id": "12345"}).sort("created_at", 1)) # Replace current_user.id with 12345 for data visualization
-        user_data = users_collection.find_one({"_id": ObjectId(current_user.id)})
-        user_goal = user_data.get("goal", "lose-weight")  # Default to weight loss if goal is missing
-
+        uid = get_current_user_id()
+        logs = list(logs_collection.find({"user_id": uid}).sort("created_at", 1))
+        user_data = users_collection.find_one({"_id": get_current_user_obj_id()})
+        user_goal = user_data.get("goal", "lose-weight")
+        
         # Generate AI-based feedback
         ai_feedback = generate_fitness_feedback(logs, user_goal,client)
 
@@ -749,7 +759,11 @@ def create_app():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--demo_mode", action="store_true", help="Run in demo mode (use fixed user id '12345')")
+    args = parser.parse_args()
+    DEMO_MODE = args.demo_mode
     app = create_app()
     port = int(os.getenv("FLASK_PORT", "5001"))
-    print(f"Starting app on port {port}...")
+    print(f"Starting app on port {port}... Demo mode: {DEMO_MODE}")
     app.run(host="0.0.0.0", port=port)
