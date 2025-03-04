@@ -318,10 +318,15 @@ def create_app():
     def community():
         user_id = str(current_user.id)
 
-        # 查询所有帖子
-        posts = list(posts_collection.find().sort("created_at", -1))
+        selected_tags = request.args.get("tags", "").split(",")
+        selected_tags = [tag.strip() for tag in selected_tags if tag.strip()]
 
-        # 查询当前用户的好友信息
+        query = {}
+        if selected_tags:
+            query["tags"] = {"$in": selected_tags}
+
+        posts = list(posts_collection.find(query).sort("created_at", -1))
+
         user_data = db.users.find_one({"_id": ObjectId(user_id)})
         friend_nicknames = user_data.get("friend_nicknames", {})
 
@@ -334,13 +339,23 @@ def create_app():
 
             post["created_at"] = post["created_at"].strftime('%Y-%m-%d %H:%M')
 
-            # 使用好友昵称
+            if "edited_at" in post:
+                try:
+                    post["edited_at"] = datetime.datetime.fromisoformat(post["edited_at"]).strftime('%Y-%m-%d %H:%M')
+                except (ValueError, TypeError):
+                    post["edited_at"] = None 
+
             if "user_id" in post:
                 post["username"] = friend_nicknames.get(post["user_id"], post.get("username", "Unknown"))
 
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return render_template("partials/post_feed.html", posts=posts)
+
         return render_template("community.html", posts=posts)
 
-    
+
+
+
     @app.route("/like_post/<post_id>", methods=["POST"])
     @login_required
     def like_post(post_id):
@@ -349,11 +364,9 @@ def create_app():
         if not post:
             return jsonify({"error": "Post not found"}), 404
 
-        # 读取当前点赞数，如果没有，则初始化
         current_likes = post.get("likes", 0)
         user_id = str(current_user.id)
 
-        # 如果帖子已经有 likes_users 记录，检查用户是否已经点赞
         if "likes_users" not in post:
             post["likes_users"] = []
 
@@ -702,31 +715,36 @@ def create_app():
     @app.route("/edit_post/<post_id>", methods=["GET", "POST"])
     @login_required
     def edit_post(post_id):
-        """ Load or update the edit post page with the current post details. """
-        post = posts_collection.find_one({"_id": ObjectId(post_id)})
+        post = posts_collection.find_one({"_id": ObjectId(post_id), "user_id": str(current_user.id)})
 
         if not post:
-            flash("Post not found!", "danger")
+            flash("Post not found or you don't have permission to edit.", "danger")
             return redirect(url_for("postlist"))
 
         if request.method == "POST":
             content = request.form.get("content")
             privacy = request.form.get("privacy")
-            tags = request.form.getlist("tag")  # Handle multiple tags
+            tags = request.form.getlist("tag")
 
-            # Update post fields
+            if not content or not privacy:
+                flash("Post content and visibility are required!", "danger")
+                return redirect(url_for("edit_post", post_id=post_id))
+
             update_fields = {
                 "content": content,
-                "privacy": privacy,
+                "visibility": privacy,
                 "tags": tags,
-                "updated_at": datetime.utcnow(),
+                "edited_at": datetime.datetime.utcnow().isoformat(),
             }
 
             posts_collection.update_one({"_id": ObjectId(post_id)}, {"$set": update_fields})
+
             flash("Post updated successfully!", "success")
             return redirect(url_for("postlist"))
 
         return render_template("edit_post.html", post=post)
+
+
 
 
     @app.route("/get_comments/<post_id>", methods=["GET"])

@@ -30,16 +30,16 @@
         </div>
     </div>
     <h1 class="page-header">Edit Post</h1>
-    <form action="{{ url_for('add_post') }}" method="POST" class="profile-form">
-      <textarea id="postcontent" name="content" class="input-field" placeholder="Write your post here..." required autocomplete="off"></textarea>
+    <form action="{{ url_for('edit_post', post_id=post._id) }}" method="POST" class="profile-form">
+      <textarea id="postcontent" name="content" class="input-field" required>{{ post.content }}</textarea>
       
       <div class="form-group">
         <div id="privacy-settings">
           <p>Who can see?</p>
           <div id="privacy-checkbox-group">
-            <label><input type="radio" name="privacy" value="private"> Private</label>
-            <label><input type="radio" name="privacy" value="friends"> Friend ONLY</label>
-            <label><input type="radio" name="privacy" value="public"> Public</label>
+            <label><input type="radio" name="privacy" value="private" {% if post.visibility == 'private' %}checked{% endif %}> Private</label>
+            <label><input type="radio" name="privacy" value="friends" {% if post.visibility == 'friends' %}checked{% endif %}> Friend ONLY</label>
+            <label><input type="radio" name="privacy" value="public" {% if post.visibility == 'public' %}checked{% endif %}> Public</label>
           </div>
         </div>
       </div>
@@ -48,14 +48,15 @@
         <div id="tag-settings">
           <p>Tag #</p>
           <div id="tag-checkbox-group">
-            <label><input type="checkbox" name="tag" value="lose_weight"> Lose Weight</label>
-            <label><input type="checkbox" name="tag" value="gain_muscle"> Gain Muscle</label>
+            <label><input type="checkbox" name="tag" value="lose_weight" {% if "lose_weight" in post.tags %}checked{% endif %}> Lose Weight</label>
+            <label><input type="checkbox" name="tag" value="gain_muscle" {% if "gain_muscle" in post.tags %}checked{% endif %}> Gain Muscle</label>
           </div>
         </div>
       </div>
       
-      <div class="button"><a href=""><span class="button-text">Save</span></a></div>
+      <button type="submit" class="button">Save</button>
     </form>
+    
   </div>
 </body>
 </html>

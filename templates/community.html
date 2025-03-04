@@ -44,6 +44,13 @@
         <a href="{{ url_for('add_post') }}"><span class="button-text">+ Post</span></a>
       </div>
     </div>
+
+    <div id="filter-section">
+      <p>Filter by Tags:</p>
+      <label><input type="checkbox" id="filter-lose-weight" value="lose_weight"> Lose Weight</label>
+      <label><input type="checkbox" id="filter-gain-muscle" value="gain_muscle"> Gain Muscle</label>
+      <button id="apply-filter">Apply Filter</button>
+    </div>
     
     <!-- Post Feed - Show All Posts -->
     <div id="post-feed">
@@ -53,7 +60,12 @@
             <div class="post-user"><strong>{{ post.username }}</strong></div>
             <div class="post-visibility">({{ post.visibility }})</div>
           </div>
-          <div class="post-date">{{ post.created_at }}</div>
+          <div class="post-date">
+            {{ post.created_at }}
+            {% if post.edited_at and post.edited_at != "None" %}
+              <span class="edited-label">(edited on {{ post.edited_at }})</span>
+            {% endif %}
+          </div>               
           <div class="post-content">
             {{ post.content }}
           </div>
@@ -187,6 +199,24 @@
             });
         });
 
+    });
+
+    document.getElementById("apply-filter").addEventListener("click", function() {
+        let selectedTags = [];
+        if (document.getElementById("filter-lose-weight").checked) {
+            selectedTags.push("lose_weight");
+        }
+        if (document.getElementById("filter-gain-muscle").checked) {
+            selectedTags.push("gain_muscle");
+        }
+
+        fetch(`/community?tags=${selectedTags.join(",")}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("post-feed").innerHTML = 
+                    new DOMParser().parseFromString(html, "text/html").getElementById("post-feed").innerHTML;
+            })
+            .catch(error => console.error("Error fetching filtered posts:", error));
     });
 </script>
 
