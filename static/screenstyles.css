@@ -863,3 +863,79 @@ a:hover {
     padding: 30px;
     color: #666;
 }
+#log-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+#log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #333;
+}
+
+#log-table th {
+  background-color: #f5f5f5;
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #ddd;
+  position: sticky;
+  top: 0;
+}
+
+#log-table th:first-child {
+  min-width: 90px; /* More space for date column */
+}
+
+#log-table th:last-child {
+  min-width: 100px; /* More space for actions column */
+}
+
+#log-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+#log-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+#log-table a {
+  color: #333;
+  text-decoration: underline;
+  margin-right: 5px;
+}
+
+#log-table button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+#no-logs-message {
+  text-align: center;
+  margin-top: 30px;
+  color: #666;
+}
+
+/* Date column styling */
+#log-table td:first-child {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+#log-table td:first-child div:first-child {
+  margin-bottom: 4px;
+}
+
+/* Actions styling */
+#log-table td:last-child {
+  white-space: nowrap;
+}
