@@ -204,7 +204,7 @@ def create_app():
         You are a professional fitness trainer. The user has a goal of {goal_text}.
         Here are their progress changes:
         {trend_text}
-        Provide personalized feedback based on their progress, including recommendations for diet and exercise.
+        Provide personalized feedback based on their progress, including recommendations for diet and exercise. Be professional and concise. Your response should be within 3 sentences
         """
 
         try:
@@ -233,7 +233,7 @@ def create_app():
         ai_feedback = generate_fitness_feedback(logs, user_goal,client)
 
         if logs:
-
+            
             timestamps = [log.get("created_at") for log in logs if "created_at" in log and log["created_at"] is not None]
         
             # All keys to display
@@ -275,7 +275,8 @@ def create_app():
             
                 fig.update_layout(
                     height=250 * num_measurements,
-                    title_text="Trend Analysis: Your Measurements"
+                    title_text="Trend Analysis: Your Measurements",
+                    legend=dict(orientation="h",)
                 )
         
             
