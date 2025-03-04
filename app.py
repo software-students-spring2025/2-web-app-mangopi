@@ -236,7 +236,7 @@ def create_app():
         # Query logs for the current user sorted in ascending order by creation time.
         uid = get_current_user_id()
         logs = list(logs_collection.find({"user_id": uid}).sort("created_at", 1))
-        user_data = users_collection.find_one({"_id": get_current_user_obj_id()})
+        user_data = users_collection.find_one({"_id": ObjectId(current_user.id)})
         user_goal = user_data.get("goal", "lose-weight")
         
         # Generate AI-based feedback
