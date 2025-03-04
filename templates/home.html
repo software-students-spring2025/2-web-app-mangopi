@@ -50,21 +50,25 @@
       <div id="trend-section">
         <h2 id="trend-title">Trend Analysis</h2>
 
-        <!-- Buttons for switching between measurement plots -->
-        <div id="measurement-buttons">
-          {% for key, timestamps, values in measurement_data %}
-          <button class="measurement-btn"
-            onclick="updateChart('{{ key }}', [{% for t in timestamps %}'{{ t }}'{% if not loop.last %}, {% endif %}{% endfor %}], 
-                                          [{% for v in values %}{{ v }}{% if not loop.last %}, {% endif %}{% endfor %}])">
-            {{ key.replace("_", " ").title() }}
-          </button>
-          {% endfor %}
-        </div>
+        {% if measurement_data %}
+          <!-- Buttons for switching between measurement plots -->
+          <div id="measurement-buttons">
+            {% for key, timestamps, values in measurement_data %}
+            <button class="measurement-btn"
+              onclick="updateChart('{{ key }}', [{% for t in timestamps %}'{{ t }}'{% if not loop.last %}, {% endif %}{% endfor %}], 
+                                            [{% for v in values %}{{ v }}{% if not loop.last %}, {% endif %}{% endfor %}])">
+              {{ key.replace("_", " ").title() }}
+            </button>
+            {% endfor %}
+          </div>
 
-        <!-- Placeholder for the Plot -->
-        <div id="trend-plot-container">
-          <div id="trend-plot"></div>
-        </div>
+          <!-- Placeholder for the Plot -->
+          <div id="trend-plot-container">
+            <div id="trend-plot"></div>
+          </div>
+        {% else %}
+          <p>You haven't recorded enough data yet. Keep tracking your progress!</p>
+        {% endif %}
       </div>
 
       <div id="feedback-section">
