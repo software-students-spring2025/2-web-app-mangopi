@@ -17,9 +17,11 @@ Our Weight Tracker & Body Dimension App helps fitness people track their journey
 8. **Community & Support**: As a fitness person, I want to connect with friends and share my progress, so that we can support each other and reflect on our fitness journeys together.
 
 _Dieter-Specific Features_
+
 9. **Filtering Diet Content**: As a dieter, I want to filter and search for diet and weight loss-related posts, so that I can easily find relevant tips, insights, and motivation for my journey.
 
 _Muscle Growth-Specific Features_
+
 10. **Filtering Muscle Growth Content**: As a person who works out for muscle growth, I want to filter and search for muscle-building-related posts, so that I can easily find relevant tips, workouts, and nutrition advice to support my progress.
 
 ## Steps necessary to run the software
