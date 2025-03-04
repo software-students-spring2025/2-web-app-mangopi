@@ -565,3 +565,41 @@ a:hover {
 .delete-button:hover {
     color: darkred;
 }
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    width: 250px;
+    height: 40px; 
+}
+
+.search-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    height: 40px;
+    width: 45px;
+    font-size: 18px;
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    border-left: none;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+    transition: 0.3s;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}

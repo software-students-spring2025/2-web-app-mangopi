@@ -443,12 +443,6 @@ def create_app():
         )
 
         return jsonify({"message": "Nickname saved!"})
-
-    
-    @app.route("/search")
-    @login_required
-    def search():
-        return render_template("search.html")
     
     @app.route("/postlist")
     @login_required
@@ -505,7 +499,23 @@ def create_app():
             return redirect(url_for("community"))
 
         return render_template("add_post.html")
+    
+    @app.route("/search", methods=["GET", "POST"])
+    @login_required
+    def search():
+        query = request.form.get("query", "").strip()
+        search_results = []
 
+        if query:
+            search_results = list(posts_collection.find(
+                {"content": {"$regex": query, "$options": "i"}}
+            ).sort("created_at", -1))
+
+            for post in search_results:
+                post["_id"] = str(post["_id"])
+                post["created_at"] = post["created_at"].strftime('%Y-%m-%d %H:%M')
+
+        return render_template("search.html", posts=search_results, query=query)
 
     @app.route("/profile", methods=["GET", "POST"])
     @login_required
