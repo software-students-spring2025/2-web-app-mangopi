@@ -234,70 +234,31 @@ def create_app():
     @app.route("/home")
     @login_required
     def home():
-        # Query logs for the current user sorted in ascending order by creation time.
         uid = get_current_user_id()
         logs = list(logs_collection.find({"user_id": uid}).sort("created_at", 1))
         user_data = users_collection.find_one({"_id": ObjectId(current_user.id)})
         user_goal = user_data.get("goal", "lose-weight")
-        
-        # Generate AI-based feedback
-        ai_feedback = generate_fitness_feedback(logs, user_goal,client)
 
-        if logs:
-            
-            timestamps = [log.get("created_at") for log in logs if "created_at" in log and log["created_at"] is not None]
-        
-            # All keys to display
-            measurement_keys = [
-                "body_weight", "body_fat", "waist", 
-                "shoulder", "chest", "abdomen", 
-                "hip", "left_thigh", "right_thigh"
-            ]
-            
-            measurements = {
-                key: [float(log[key]) for log in logs if key in log and log[key] is not None]
-                for key in measurement_keys
-            }
-            
-            num_measurements = sum(1 for key in measurement_keys if measurements[key])
-            
-            if num_measurements > 0:
-                
-                fig = make_subplots(
-                    rows=num_measurements, cols=1,
-                    shared_xaxes=True,
-                    vertical_spacing=0.03,
-                    subplot_titles=[key.replace("_", " ").title() for key in measurement_keys]
-                )
-            
-                row = 1
-                for key in measurement_keys:
-                    if measurements[key]:
-                        fig.add_trace(
-                            go.Scatter(
-                                x=timestamps, 
-                                y=measurements[key],
-                                mode="lines+markers",
-                                name=key
-                            ),
-                            row=row, col=1
-                        )
-                    row += 1
-            
-                fig.update_layout(
-                    height=250 * num_measurements,
-                    title_text="Trend Analysis: Your Measurements",
-                    legend=dict(orientation="h",)
-                )
-        
-            
-                plot_html = pio.to_html(fig, full_html=False)
-            else:
-                plot_html = "<p>You haven't added your body information yet. Start Now!</p>"
-        else:
-            plot_html = "<p>You haven't added your body information yet. Start Now!<p>"
-            
-        return render_template("home.html", plot_html=plot_html, ai_feedback = ai_feedback)
+        ai_feedback = generate_fitness_feedback(logs, user_goal, client)
+
+        measurement_keys = [
+            "body_weight", "body_fat", "waist", 
+            "shoulder", "chest", "abdomen", 
+            "hip", "left_thigh", "right_thigh"
+        ]
+
+        timestamps = [log.get("created_at") for log in logs if "created_at" in log and log["created_at"] is not None]
+
+        measurements = {
+            key: [float(log[key]) for log in logs if key in log and log[key] is not None]
+            for key in measurement_keys
+        }
+
+        measurement_data = [(key, timestamps, measurements[key]) for key in measurement_keys if measurements[key]]
+
+        return render_template("home.html", measurement_data=measurement_data, ai_feedback=ai_feedback)
+
+
         
 
     @app.route("/measurements")

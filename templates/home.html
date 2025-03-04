@@ -1,63 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-  <!-- Use url_for to load the CSS file from the static folder -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='screenstyles.css') }}">
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <button class="logout-button">
-        <a href="{{ url_for('logout') }}" style="text-decoration: underline;">Logout</a>
-      </button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <!-- Use url_for to load the CSS file from the static folder -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='screenstyles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <button class="logout-button">
+          <a href="{{ url_for('logout') }}" style="text-decoration: underline"
+            >Logout</a
+          >
+        </button>
+      </div>
+
+      <!-- Navigation Menu -->
+      <div class="nav-menu">
+        <div class="menu-button active">
+          <span class="menu-text active"
+            ><a href="{{ url_for('home') }}">Home</a></span
+          >
+        </div>
+        <div class="menu-button">
+          <span class="menu-text"
+            ><a href="{{ url_for('measurements') }}">Measurements</a></span
+          >
+        </div>
+        <div class="menu-button">
+          <span class="menu-text"
+            ><a href="{{ url_for('community') }}">Community</a></span
+          >
+        </div>
+        <div class="menu-button">
+          <span class="menu-text"
+            ><a href="{{ url_for('profile') }}">Profile</a></span
+          >
+        </div>
+      </div>
+
+      <h1 class="page-header">Home</h1>
+
+      <!-- Trend Analysis Section -->
+      <div id="trend-section">
+        <h2 id="trend-title">Trend Analysis</h2>
+
+        <!-- Buttons for switching between measurement plots -->
+        <div id="measurement-buttons">
+          {% for key, timestamps, values in measurement_data %}
+          <button class="measurement-btn"
+            onclick="updateChart('{{ key }}', [{% for t in timestamps %}'{{ t }}'{% if not loop.last %}, {% endif %}{% endfor %}], 
+                                          [{% for v in values %}{{ v }}{% if not loop.last %}, {% endif %}{% endfor %}])"
+          >
+            {{ key.replace("_", " ").title() }}
+          </button>
+          {% endfor %}
+        </div>
+
+        <!-- Placeholder for the Plot -->
+        <div id="trend-plot-container">
+          <div id="trend-plot"></div>
+        </div>
+      </div>
+
+      <div id="feedback-section">
+        <h2 id="feedback-title">AI Fitness Feedback</h2>
+        <div id="feedback-box">
+          <p>{{ ai_feedback }}</p>
+        </div>
+      </div>
+
     </div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+      function updateChart(measurementKey, timestamps, values) {
+        let trace = {
+          x: timestamps,
+          y: values,
+          mode: "lines+markers",
+          type: "scatter",
+          name: measurementKey,
+          line: {
+            color: '#333',
+            width: 2
+          },
+          marker: {
+            size: 8,
+            color: '#333'
+          }
+        };
 
-    <!-- Navigation Menu -->
-    <div class="nav-menu">
-      <div class="menu-button active">
-        <span class="menu-text active"><a href="{{ url_for('home') }}">Home</a></span>
-      </div>
-      <div class="menu-button">
-        <span class="menu-text"><a href="{{ url_for('measurements') }}">Measurements</a></span>
-      </div>
-      <div class="menu-button">
-        <span class="menu-text"><a href="{{ url_for('community') }}">Community</a></span>
-      </div>
-      <div class="menu-button">
-        <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
-      </div>
-    </div>
+        let layout = {
+          title: measurementKey.replace("_", " ").toUpperCase(),
+          xaxis: { 
+            title: "Date",
+            gridcolor: '#f0f0f0'
+          },
+          yaxis: { 
+            title: "Value",
+            gridcolor: '#f0f0f0'
+          },
+          margin: {
+            l: 50,
+            r: 20,
+            t: 50,
+            b: 50
+          },
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: {
+            family: 'Inter, sans-serif'
+          }
+        };
 
-    <h1 class="page-header">Home</h1>
-    
-    <!-- Trend Analysis Section -->
-    <div class="trend-section">
-      <h2>Trend Analysis</h2>
-      <div id="trend-plot">
-        {{ plot_html|safe }}
-      </div>
-      <div class="button">
-        <a href="#" onclick="resetTrend()"><span class="button-text">Reset Trend</span></a>
-      </div>
-    </div>
+        Plotly.newPlot("trend-plot", [trace], layout, {responsive: true});
+      }
 
-    <!-- AI Fitness Feedback Section -->
-    <div class="feedback-section" style="margin-top: 40px;">
-      <h2>AI Fitness Feedback</h2>
-      <div class="feedback-box">
-        <p>{{ ai_feedback }}</p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function resetTrend() {
-      location.reload();
-    }
-  </script>
-
-</body>
+      // Load the first available measurement on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        let firstButton = document.querySelector("#measurement-buttons button");
+        if (firstButton) {
+          firstButton.click();
+        }
+      });
+    </script>
+    <script>
+      function resetTrend() {
+        location.reload();
+      }
+    </script>
+  </body>
 </html>
