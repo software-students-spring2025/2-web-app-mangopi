@@ -25,7 +25,7 @@ _Muscle Growth-Specific Features_
 ## Steps necessary to run the software
 
 1. **Clone the Repository**  
-   Clone the repository using Git or download it as a ZIP file:  
+
    ```bash
    git clone https://github.com/software-students-spring2025/2-web-app-mangopi.git
    cd 2-web-app-mangopi
