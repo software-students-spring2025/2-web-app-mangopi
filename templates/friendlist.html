@@ -48,6 +48,27 @@
     </div>
 
     <script>
+    document.querySelectorAll(".friend-record").forEach(record => {
+        // Get the friend info element and create a proper container for it
+        const friendInfo = record.querySelector(".friend-info");
+        
+        // Get the elements to move to new container
+        const nicknameInput = record.querySelector(".nickname-input");
+        const saveButton = record.querySelector(".save-nickname");
+        const deleteButton = record.querySelector(".delete-friend");
+        
+        // Create new container for input and action buttons (on same line)
+        const inputActionRow = document.createElement("div");
+        inputActionRow.className = "input-action-row";
+        
+        // Remove elements from current position
+        record.appendChild(inputActionRow);
+        
+        // Move elements into the new container
+        inputActionRow.appendChild(nicknameInput);
+        inputActionRow.appendChild(saveButton);
+        inputActionRow.appendChild(deleteButton);
+    });
     document.addEventListener("DOMContentLoaded", function () {
         // 监听删除好友按钮
         document.querySelectorAll(".delete-friend").forEach(button => {
