@@ -104,7 +104,7 @@ def create_app():
     @app.route("/logout")
     def logout():
         logout_user()
-        return redirect(url_for("login"))
+        return render_template("alert.html", message="You’ve been logged out.", redirect_url="login")
     
     @app.route("/signup", methods=["GET", "POST"])
     def signup():
