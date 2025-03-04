@@ -15,13 +15,15 @@
             <input type="password" name="password" placeholder="Password" required autocomplete="off"/>
             <button type="submit">Sign Up</button>
         </form>
+        
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="error-message">
-                    {{ messages[0] }}
-                </div>
+                <script>
+                    alert("{{ messages[0] }}"); 
+                </script>
             {% endif %}
         {% endwith %}
+
         <div class="signup-prompt">
             Already Have an Account? <a href="{{ url_for('login') }}">Login</a>
         </div>

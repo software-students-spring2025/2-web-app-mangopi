@@ -55,8 +55,7 @@
           {% for key, timestamps, values in measurement_data %}
           <button class="measurement-btn"
             onclick="updateChart('{{ key }}', [{% for t in timestamps %}'{{ t }}'{% if not loop.last %}, {% endif %}{% endfor %}], 
-                                          [{% for v in values %}{{ v }}{% if not loop.last %}, {% endif %}{% endfor %}])"
-          >
+                                          [{% for v in values %}{{ v }}{% if not loop.last %}, {% endif %}{% endfor %}])">
             {{ key.replace("_", " ").title() }}
           </button>
           {% endfor %}

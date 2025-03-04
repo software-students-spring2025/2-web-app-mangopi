@@ -15,11 +15,11 @@
             <button type="submit">Login</button>
         </form>
         {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="error-message">
-                    {{ messages[0] }}
-                </div>
-            {% endif %}
+        {% if messages %}
+            <script>
+                alert("{{ messages[0] }}"); 
+            </script>
+        {% endif %}
         {% endwith %}
         <div class="signup-prompt">
             Don't Have an Account? <a href="{{ url_for('signup') }}">Sign Up</a>

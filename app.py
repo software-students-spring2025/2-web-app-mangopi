@@ -112,17 +112,22 @@ def create_app():
             name = request.form.get("name")
             email = request.form.get("email")
             password = request.form.get("password")
-            
+
             # Validate inputs
             if not all([name, email, password]):
                 flash("All fields are required")
                 return render_template("signup.html")
-                
+
+            # Basic email validation without using regex
+            if "@" not in email or "." not in email.split("@")[-1]:
+                flash("Invalid email format")
+                return render_template("signup.html")
+
             # Check if user already exists
             if users_collection.find_one({"email": email}):
                 flash("Email already exists")
                 return render_template("signup.html")
-            
+
             # Create new user
             try:
                 hashed_password = generate_password_hash(password)
@@ -146,8 +151,9 @@ def create_app():
             except Exception as e:
                 print(f"Error creating user: {e}")
                 flash("An error occurred during signup")
-            
+
         return render_template("signup.html")
+
     
     @app.route("/accountsetting", methods=["GET", "POST"])
     @login_required
