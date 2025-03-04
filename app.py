@@ -163,7 +163,7 @@ def create_app():
         return render_template("accountsetting.html", user = user_data)
 
     # Generate AI-driven feedback for users' fitness progress
-    def generate_fitness_feedback(logs, user_goal,client):
+    def generate_fitness_feedback(logs, user_goal, client):
         if not logs or len(logs) < 2:
             return "You haven't recorded enough data yet. Keep tracking your progress!"
         
@@ -292,7 +292,7 @@ def create_app():
     @app.route("/measurements")
     @login_required
     def measurements():
-        logs = logs_collection.find({"user_id": current_user.id}).sort("created_at", -1)
+        logs = list(logs_collection.find({"user_id": current_user.id}).sort("created_at", -1))
         return render_template("measurements.html", logs=logs)
     
     @app.route("/community")
@@ -530,6 +530,7 @@ def create_app():
     @app.route("/add_log", methods=["GET", "POST"])
     @login_required
     def add_log():
+        last_log_id = None  # Default: No log yet
         if request.method == "POST":
             body_weight = request.form.get("body_weight")
             body_fat = request.form.get("body_fat")
@@ -562,11 +563,12 @@ def create_app():
                 "created_at": datetime.datetime.utcnow()
             }
 
-            logs_collection.insert_one(doc)
+            inserted_log = logs_collection.insert_one(doc)
+            last_log_id = str(inserted_log.inserted_id) 
             flash("Log added.", "success")
             
-            # Redirect to measurements after saving
-            return redirect(url_for("measurements"))
+            # Show form again with edit button
+            return render_template("add_log.html", last_log_id=last_log_id)
         
         return render_template("add_log.html")
     

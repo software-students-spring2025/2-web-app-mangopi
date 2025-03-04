@@ -125,6 +125,15 @@
       <!-- Save Button -->
       <button type="submit" id="saveButton" class="save-button" disabled>Save</button>
     </form>
+
+    <!-- Edit Last Log Button -->
+    {% if last_log_id %}
+    <div style="text-align: center; margin-top: 15px;">
+      <a href="{{ url_for('edit_log', log_id=last_log_id) }}">
+        <button class="edit-button">Edit Last Log</button>
+      </a>
+    </div>
+    {% endif %}
   </div>
 
   <!-- Input Validation & Live Date Update -->

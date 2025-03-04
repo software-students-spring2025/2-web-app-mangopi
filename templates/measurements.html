@@ -28,9 +28,58 @@
             <span class="menu-text"><a href="{{ url_for('profile') }}">Profile</a></span>
         </div>
     </div>
+
     <h1 class="page-header">Measurements</h1>
+
     <div class="button">
         <a href="{{ url_for('add_log') }}"><span class="button-text">+ Log</span></a>
+    </div>
+
+    <!-- Display Logs-->
+    <div class  = "log-container">
+      {% if logs %}
+        <table class = "log-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Body Weight (kg)</th>
+              <th>Body Fat (%)</th>
+              <th>Waist (cm)</th>
+              <th>Shoulder (cm)</th>
+              <th>Chest (cm)</th>
+              <th>Abdomen (cm)</th>
+              <th>Hip (cm)</th>
+              <th>Left Thigh (cm)</th>
+              <th>Right Thigh (cm)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+            <tr>
+              <td>{{ log["created_at"].strftime('%Y-%m-%d') }}</td>
+              <td>{{ log["body_weight"] }}</td>
+              <td>{{ log["body_fat"] }}</td>
+              <td>{{ log["waist"] }}</td>
+              <td>{{ log["shoulder"] }}</td>
+              <td>{{ log["chest"] }}</td>
+              <td>{{ log["abdomen"] }}</td>
+              <td>{{ log["hip"] }}</td>
+              <td>{{ log["left_thigh"] }}</td>
+              <td>{{ log["right_thigh"] }}</td>
+              <td>
+                <a href = "{{ url_for('edit_log', log_id = log['_id']) }}">Edit</a> |
+                <form action = "{{ url_for('delete_log', log_id = log['_id']) }}" method = "POST" style = "display:inline;">
+                  <button type="submit" onclick="return confirm('Are you sure?');">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No measurement logs found. <a href="{{ url_for('add_log') }}">Add your first log!</a></p>
+      {% end if %}
     </div>
   </div>
 </body>
