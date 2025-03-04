@@ -57,11 +57,9 @@ To run the application in normal mode (using the logged-in user’s data):
 
     ```bash
     python app.py
-    ```bash
 
 To run the application in DEMO mode (forcing a fixed user id, e.g. “12345”, for testing):
 
-    ```bash
     python app.py --demo_mode
 
 
