@@ -44,6 +44,7 @@ _Muscle Growth-Specific Features_
 
 
 Create a .env file in the project root and add the following (adjust values as needed):
+
     ```bash
     SECRET_KEY=your-secret-key
     MONGO_URI=your-mongodb-connection-string
@@ -53,12 +54,12 @@ Create a .env file in the project root and add the following (adjust values as n
 
 4. **Run the client**
 
-To run the application in normal mode (using the logged-in user’s data):
+    To run the application in normal mode (using the logged-in user’s data):
 
     ```bash
     python app.py
 
-To run the application in DEMO mode (forcing a fixed user id, e.g. “12345”, for testing):
+    To run the application in DEMO mode (forcing a fixed user id, e.g. “12345”, for testing):
 
     python app.py --demo_mode
 
