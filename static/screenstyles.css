@@ -388,14 +388,21 @@ a:hover {
 #search-button:hover {
     background: #555;
 }
-
 .post-container {
     width: 100%;
     margin-top: 20px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
     background-color: white;
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+  }
+  
+  .post-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
   }
   
   .post-header {
@@ -429,18 +436,28 @@ a:hover {
   
   .post-actions {
     display: flex;
-    justify-content: flex-end;
-    padding: 10px 20px 15px;
+    padding: 10px 20px;
+    border-top: 1px solid #f0f0f0;
   }
   
-  .post-action-button {
-    padding: 8px 20px;
-    margin-left: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
-    font-size: 14px;
+  .like-button, .comment-button {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 15px;
     cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    color: #666;
+  }
+  
+  .like-button:hover, .comment-button:hover {
+    color: #333;
+  }
+  
+  .like-count {
+    margin-left: 4px;
   }
 
 .post-container {
@@ -513,11 +530,48 @@ a:hover {
     color: #333;
 }
 
-.post-actions {
-    display: flex;
-    gap: 10px;
-}
-
+#filter-section {
+    margin: 0 0 25px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    position: relative;
+  }
+  
+  #filter-section p {
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  
+  #filter-section label {
+    margin-right: 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  #filter-section input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+  #apply-filter {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    padding: 6px 12px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  #apply-filter:hover {
+    background: #555;
+  }
 .post-action {
     font-size: 14px;
     color: #666;
@@ -603,3 +657,68 @@ a:hover {
 .search-button:hover {
     background-color: #0056b3;
 }
+
+.post-tags {
+    font-size: 14px;
+    color: #666;
+    padding: 0 20px 10px;
+  }
+  
+  .post-tags span {
+    display: inline-block;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    padding: 3px 10px;
+    margin-right: 5px;
+    font-size: 12px;
+  }
+  .comments-container {
+    padding: 20px 20px 15px;
+    border-top: 1px solid #eee;
+  }
+  
+  .comments-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+  }
+  
+  .comment-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  
+  .comment-time {
+    font-size: 12px;
+    color: #999;
+    margin-left: 6px;
+  }
+  
+  /* Comment input container */
+  .comment-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .comment-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .submit-comment {
+    padding: 8px 12px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .submit-comment:hover {
+    background: #555;
+  }

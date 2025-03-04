@@ -47,9 +47,13 @@
 
     <div id="filter-section">
       <p>Filter by Tags:</p>
-      <label><input type="checkbox" id="filter-lose-weight" value="lose_weight"> Lose Weight</label>
-      <label><input type="checkbox" id="filter-gain-muscle" value="gain_muscle"> Gain Muscle</label>
-      <button id="apply-filter">Apply Filter</button>
+      <div class="filter-content">
+        <div class="filter-options">
+          <label><input type="checkbox" id="filter-lose-weight" value="lose_weight"> Lose Weight</label>
+          <label><input type="checkbox" id="filter-gain-muscle" value="gain_muscle"> Gain Muscle</label>
+        </div>
+        <button id="apply-filter">Apply Filter</button>
+      </div>
     </div>
     
     <!-- Post Feed - Show All Posts -->
@@ -78,13 +82,13 @@
               </button>              
               <button class="comment-button" data-post-id="{{ post._id }}">💬 Comment</button>
           </div>
-              <div class="comments-container" id="comments-{{ post._id }}" style="display: none;">
-              <div class="comments-list"></div>
+          <div class="comments-container" id="comments-{{ post._id }}" style="display: none;">
+            <div class="comments-list"></div>
+            <div class="comment-input-container">
               <input type="text" class="comment-input" placeholder="Write down your comment..." />
               <button class="submit-comment" data-post-id="{{ post._id }}">Post</button>
+            </div>
           </div>
-        
-        
         </div>
       {% endfor %}
     </div>
